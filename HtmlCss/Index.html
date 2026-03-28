@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quantity Measurement App</title>
+
+  <!-- Link to our CSS file -->
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Google Font for nice text -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- ===== MAIN CARD ===== -->
+  <div class="card-wrapper">
+
+    <!-- ===== LEFT SIDE: Image in circle + App Name ===== -->
+    <div class="left-panel">
+
+      <!-- Blue circle with measurement image inside -->
+      <div class="img-circle">
+        <img
+          src="https://e7.pngegg.com/pngimages/146/275/png-clipart-physical-quantity-physics-magnitude-unit-of-measurement-science-angle-measurement-thumbnail.png"
+          alt="Quantity Measurement"
+        />
+      </div>
+
+      <!-- App name below the circle -->
+      <p class="brand-name">Quantity Measurement App</p>
+    </div>
+
+    <!-- ===== RIGHT SIDE: Login / Signup Forms ===== -->
+    <div class="right-panel">
+
+      <!-- TAB BUTTONS: LOGIN | SIGNUP -->
+      <div class="tabs">
+        <button class="tab-btn" id="loginTab" onclick="showTab('login')">LOGIN</button>
+        <button class="tab-btn active" id="signupTab" onclick="showTab('signup')">SIGNUP</button>
+      </div>
+
+      <!-- ===== LOGIN FORM ===== -->
+      <div class="form-section" id="loginForm">
+
+        <!-- Email -->
+        <div class="input-group">
+          <label>Email Id</label>
+          <input type="email" id="loginEmail" placeholder="Enter your email" />
+        </div>
+
+        <!-- Password with show/hide toggle -->
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" placeholder="Enter your password" />
+            <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁️</span>
+          </div>
+        </div>
+
+        <!-- Login button -->
+        <button class="submit-btn" onclick="handleLogin()">Login</button>
+
+        <!-- Message area (success / error) -->
+        <p class="msg" id="loginMsg"></p>
+      </div>
+
+      <!-- ===== SIGNUP FORM ===== -->
+      <div class="form-section" id="signupForm">
+
+        <!-- Full Name -->
+        <div class="input-group">
+          <label>Full Name</label>
+          <input type="text" id="signupName" placeholder="Enter your full name" />
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <label>Email Id</label>
+          <input type="email" id="signupEmail" placeholder="Enter your email" />
+        </div>
+
+        <!-- Password with show/hide toggle -->
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="signupPassword" placeholder="Create a password" />
+            <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁️</span>
+          </div>
+        </div>
+
+        <!-- Mobile Number -->
+        <div class="input-group">
+          <label>Mobile Number</label>
+          <input type="tel" id="signupMobile" placeholder="Enter mobile number" />
+        </div>
+
+        <!-- Signup button -->
+        <button class="submit-btn" onclick="handleSignup()">Signup</button>
+
+        <!-- Message area (success / error) -->
+        <p class="msg" id="signupMsg"></p>
+      </div>
+
+    </div>
+    <!-- End Right Panel -->
+
+  </div>
+  <!-- End Card -->
+
+  <!-- Link to JavaScript file -->
+  <script src="app.js"></script>
+
+</body>
+</html>

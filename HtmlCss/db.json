@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "name": "Anamika Yadav",
+      "email": "anamikay1144@gmail.com",
+      "password": "Anamika@1234",
+      "mobile": "8534002581",
+      "id": 1
+    }
+  ],
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
