@@ -1,0 +1,357 @@
+/* =============================================
+   css/auth.css
+   Styles for index.html (Login / Signup page)
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ─── Reset ──────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ─── Variables: brand colours, spacing, and font ── */
+:root {
+  --primary:       #C0392B;
+  --primary-dark:  #a93226;
+  --primary-light: #fdecea;
+  --text-dark:     #1a1a2e;
+  --text-mid:      #555577;
+  --text-light:    #aaa;
+  --border:        #e0e0e0;
+  --bg:            #f0f2f5;
+  --white:         #ffffff;
+  --success:       #27ae60;
+  --error:         #e74c3c;
+  --radius:        12px;
+  --radius-sm:     8px;
+  --shadow:        0 16px 48px rgba(0,0,0,0.14);
+  --font:          'Poppins', sans-serif;
+}
+
+/* ─── Body: centres the card vertically and horizontally ── */
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+/* ─── Card Wrapper: two-panel flex row with fade-up entrance animation ── */
+.card-wrapper {
+  display: flex;
+  width: 780px;
+  min-height: 500px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  background: var(--white);
+  animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Left Panel: dark gradient branding area with decorative circles ── */
+.left-panel {
+  width: 42%;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 44px 28px;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative circle top-right */
+.left-panel::before {
+  content: '';
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 1px solid rgba(192,57,43,0.2);
+  top: -60px;
+  right: -60px;
+}
+
+/* Decorative circle bottom-left */
+.left-panel::after {
+  content: '';
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.06);
+  bottom: -40px;
+  left: -40px;
+}
+
+/* Circular logo container with red-tinted border and glow */
+.img-circle {
+  width: 170px;
+  height: 170px;
+  border-radius: 50%;
+  background: rgba(192,57,43,0.15);
+  border: 2px solid rgba(192,57,43,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.img-circle img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 12px rgba(192,57,43,0.5));
+}
+
+.brand-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  text-align: center;
+  letter-spacing: 0.4px;
+  line-height: 1.4;
+  position: relative;
+  z-index: 1;
+}
+
+.brand-tagline {
+  font-size: 11px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Right Panel: white form area ── */
+.right-panel {
+  width: 58%;
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ─── Tabs: Login / Sign Up switcher with red underline on active tab ── */
+.tabs {
+  display: flex;
+  gap: 28px;
+  margin-bottom: 32px;
+  border-bottom: 1.5px solid var(--border);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  padding-bottom: 10px;
+  position: relative;
+  letter-spacing: 1.2px;
+  transition: color 0.2s;
+  text-transform: uppercase;
+}
+
+.tab-btn.active {
+  color: var(--primary);
+}
+
+/* Red underline indicator for the active tab */
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1.5px;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: var(--primary);
+  border-radius: 2px 2px 0 0;
+}
+
+/* ─── Form Section: hidden by default; .show makes it visible ── */
+.form-section { display: none; }
+.form-section.show { display: block; }
+
+.form-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+.form-subtitle {
+  font-size: 12.5px;
+  color: var(--text-mid);
+  margin-bottom: 22px;
+}
+
+/* ─── Input Groups: label + input + inline error message ── */
+.input-group {
+  margin-bottom: 14px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 13.5px;
+  color: var(--text-dark);
+  outline: none;
+  background: #fafafa;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 3px rgba(192,57,43,0.08);
+}
+
+.input-group input::placeholder { color: #c0c0c0; }
+
+/* Red border + light pink background when setFieldError() marks a field invalid */
+.input-group input.invalid {
+  border-color: var(--error);
+  background: #fff8f8;
+}
+
+/* Inline error text below an input; .show makes it visible */
+.field-error {
+  font-size: 11px;
+  color: var(--error);
+  margin-top: 4px;
+  display: none;
+}
+
+.field-error.show { display: block; }
+
+/* ─── Password Wrapper: positions the eye icon over the right edge of the input ── */
+.password-wrapper { position: relative; }
+
+.password-wrapper input { padding-right: 40px; }
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  opacity: 0.4;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+
+.eye-icon:hover { opacity: 0.8; }
+
+/* ─── Submit Button: full-width, red, with shadow and press animation ── */
+.submit-btn {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(192,57,43,0.35);
+}
+
+.submit-btn:hover {
+  background: var(--primary-dark);
+  box-shadow: 0 6px 18px rgba(192,57,43,0.4);
+}
+
+.submit-btn:active { transform: scale(0.98); }
+
+/* Greyed out and non-clickable while an async request is in flight */
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ─── Messages: success/error status text shown below the submit button ── */
+.msg {
+  margin-top: 10px;
+  font-size: 12.5px;
+  text-align: center;
+  min-height: 18px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.msg.success { color: var(--success); }
+.msg.error   { color: var(--error); }
+
+/* ─── Switch Link: "Already have an account?" text with a clickable tab link ── */
+.switch-link {
+  margin-top: 14px;
+  font-size: 12.5px;
+  color: var(--text-mid);
+  text-align: center;
+}
+
+.switch-link a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.switch-link a:hover { opacity: 0.75; }
+
+/* ─── Responsive: stacks panels vertically on small screens ── */
+@media (max-width: 700px) {
+  .card-wrapper {
+    flex-direction: column;
+    width: 100%;
+    max-width: 440px;
+  }
+  .left-panel, .right-panel { width: 100%; }
+  .right-panel { padding: 32px 28px; }
+  .left-panel { padding: 32px 28px; }
+}

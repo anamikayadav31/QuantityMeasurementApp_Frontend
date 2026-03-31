@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--
+  pages/home.html — Main app page (protected, requires login)
+  Layout  : Fixed navbar + mode tab bar + scrollable content panels
+  Modes   : Converter | Comparison | Arithmetic (switched via switchMode() in home.js)
+  Depends : css/home.css (styles), js/units.js (unit data), js/home.js (all logic)
+  Guard   : home.js redirects to index.html if sessionStorage.loggedIn is missing
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantity Measurement App — Home</title>
+  <link rel="stylesheet" href="../css/home.css" />
+</head>
+<body>
+
+<!-- NAVBAR: App logo, welcome greeting (set by home.js), and logout button -->
+<nav class="navbar">
+  <a class="navbar-brand" href="#">
+    <div class="navbar-logo">
+      <img src="https://e7.pngegg.com/pngimages/146/275/png-clipart-physical-quantity-physics-magnitude-unit-of-measurement-science-angle-measurement-thumbnail.png" alt="Logo" />
+    </div>
+    <span class="navbar-title">Quantity Measurement</span>
+  </a>
+  <div class="navbar-right">
+    <span class="user-greeting" id="userGreeting"></span> <!-- filled by home.js on load -->
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- APP SHELL: Full-height container below the navbar; no page scroll -->
+<div class="app-shell">
+
+  <!-- MODE BAR: Top-level tabs to switch between the three functional panels -->
+  <div class="mode-bar">
+    <button class="mode-btn active" id="modeConverter"   onclick="switchMode('converter')">
+      <span class="mode-icon">🔄</span> Converter
+    </button>
+    <button class="mode-btn"        id="modeComparison"  onclick="switchMode('comparison')">
+      <span class="mode-icon">⚖️</span> Comparison
+    </button>
+    <button class="mode-btn"        id="modeArithmetic"  onclick="switchMode('arithmetic')">
+      <span class="mode-icon">➕</span> Arithmetic
+    </button>
+  </div>
+
+  <!-- CONTENT AREA: Only the active .mode-panel is visible at a time -->
+  <div class="content-area">
+
+    <!-- ── CONVERTER PANEL ──────────────────────────────────────────
+         Convert a value from one unit to another within a category.
+         Category tabs, unit selects, and quick-ref built by home.js.
+    ─────────────────────────────────────────────────────────────── -->
+    <div class="mode-panel active" id="panelConverter">
+      <div class="panel-body">
+
+        <!-- Category tabs (Length / Weight / Volume / Temperature) — injected by home.js -->
+        <div class="cat-row" id="categoryTabs"></div>
+
+        <!-- Converter card: From input + unit select → swap button → To unit select + result -->
+        <div class="card card-accent">
+          <div class="card-title" id="converterHeading"><span>📏</span> Length Converter</div>
+          <div class="converter-row">
+            <div class="input-group">
+              <label for="fromValue">From</label>
+              <div class="field-pair">
+                <input type="number" id="fromValue" class="num-input" value="1" placeholder="0" />
+                <select id="fromUnit" class="unit-select" onchange="runConversion()"></select>
+              </div>
+            </div>
+            <!-- Swap button: exchanges from/to units and recalculates -->
+            <div class="swap-wrap">
+              <button class="swap-btn" onclick="swapUnits()" title="Swap">⇄</button>
+            </div>
+            <div class="input-group">
+              <label for="toUnit">To</label>
+              <div class="field-pair">
+                <select id="toUnit" class="unit-select" style="flex:1" onchange="runConversion()"></select>
+              </div>
+            </div>
+          </div>
+          <!-- Result display: value, unit symbol, and formula string -->
+          <div class="result-box">
+            <span class="result-label">Result</span>
+            <span class="result-value" id="resultValue">—</span>
+            <span class="result-unit"  id="resultUnit"></span>
+            <span class="result-formula" id="resultFormula"></span>
+          </div>
+        </div>
+
+        <!-- Quick Reference: clickable preset conversions, built by buildQuickRef() -->
+        <div class="card">
+          <div class="section-label">Quick Reference</div>
+          <div class="ref-grid" id="quickRefGrid"></div>
+        </div>
+
+        <!-- History: last 12 conversions, hidden until first conversion is made -->
+        <div class="card" id="historySection" style="display:none;">
+          <div class="history-header">
+            <div class="section-label" style="margin-bottom:0">Recent Conversions</div>
+            <button class="clear-btn" onclick="clearHistory()">Clear all</button>
+          </div>
+          <div class="history-list" id="historyList"></div>
+          <p class="history-empty" id="historyEmpty">No conversions yet.</p>
+        </div>
+
+      </div>
+    </div>
+    <!-- end converter panel -->
+
+    <!-- ── COMPARISON PANEL ─────────────────────────────────────────
+         Compare two values (different units) side by side.
+         Both are converted to a common base unit for fair comparison.
+         Result shown as proportional bars + a text verdict.
+    ─────────────────────────────────────────────────────────────── -->
+    <div class="mode-panel" id="panelComparison">
+      <div class="panel-body">
+
+        <!-- Category tabs — injected by home.js -->
+        <div class="cat-row" id="cmpCategoryTabs"></div>
+
+        <div class="card card-accent">
+          <div class="card-title"><span>⚖️</span> Side-by-Side Comparison</div>
+
+          <!-- Two input sides (A and B) with independent unit selects -->
+          <div class="cmp-grid">
+            <div class="cmp-side">
+              <div class="cmp-side-label"><span class="cmp-badge badge-a">A</span> Value A</div>
+              <div class="field-pair">
+                <input type="number" id="cmpValueA" class="num-input" value="1" placeholder="0" oninput="runComparison()" style="font-size:15px;" />
+                <select id="cmpUnitA" class="unit-select" onchange="runComparison()"></select>
+              </div>
+            </div>
+            <div class="cmp-side">
+              <div class="cmp-side-label"><span class="cmp-badge badge-b">B</span> Value B</div>
+              <div class="field-pair">
+                <input type="number" id="cmpValueB" class="num-input" value="5" placeholder="0" oninput="runComparison()" style="font-size:15px;" />
+                <select id="cmpUnitB" class="unit-select" onchange="runComparison()"></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comparison result: animated bar chart + verdict text, updated by runComparison() -->
+          <div class="cmp-result-box" id="cmpResultBox">
+            <div class="cmp-result-title">Comparison Result (converted to base unit)</div>
+            <div class="cmp-bars">
+              <div class="cmp-bar-row">
+                <div class="cmp-bar-label"><span class="cmp-badge badge-a" style="width:20px;height:20px;font-size:10px;">A</span></div>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill fill-a" id="barA" style="width:50%"></div></div>
+                <div class="cmp-bar-val" id="barLabelA">—</div>
+              </div>
+              <div class="cmp-bar-row">
+                <div class="cmp-bar-label"><span class="cmp-badge badge-b" style="width:20px;height:20px;font-size:10px;">B</span></div>
+                <div class="cmp-bar-track"><div class="cmp-bar-fill fill-b" id="barB" style="width:50%"></div></div>
+                <div class="cmp-bar-val" id="barLabelB">—</div>
+              </div>
+            </div>
+            <div class="cmp-verdict verdict-na" id="cmpVerdict">Enter values to compare</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- end comparison panel -->
+
+    <!-- ── ARITHMETIC PANEL ─────────────────────────────────────────
+         Perform Add / Subtract / Divide on two values with any units.
+         B is auto-converted to A's unit before the operation.
+         Divide produces a dimensionless ratio.
+         Right side shows step-by-step breakdown of the calculation.
+    ─────────────────────────────────────────────────────────────── -->
+    <div class="mode-panel" id="panelArithmetic">
+      <div class="panel-body">
+
+        <!-- Category tabs — injected by home.js -->
+        <div class="cat-row" id="arithCategoryTabs"></div>
+
+        <div class="card card-accent">
+          <div class="card-title"><span>🧮</span> Unit Arithmetic</div>
+
+          <!-- Operation selector: Add / Subtract / Divide, handled by setOp() -->
+          <div class="op-tabs">
+            <button class="op-btn active" id="opAdd"      onclick="setOp('add')">＋ Add</button>
+            <button class="op-btn"        id="opSubtract" onclick="setOp('subtract')">－ Subtract</button>
+            <button class="op-btn"        id="opDivide"   onclick="setOp('divide')">÷ Divide</button>
+          </div>
+
+          <!-- Two-column layout: left = inputs + result, right = calculation steps -->
+          <div class="arith-layout">
+
+            <!-- Left: Value A, operator symbol, Value B, result box, warning note -->
+            <div>
+              <div class="arith-inputs">
+                <div class="arith-row">
+                  <div class="arith-label">A</div>
+                  <input type="number" id="arithValueA" class="arith-input" value="10" placeholder="0" oninput="runArithmetic()" />
+                  <select id="arithUnitA" class="arith-unit-select" onchange="runArithmetic()"></select>
+                </div>
+                <!-- Dynamic operator symbol (＋ / － / ÷) updated by setOp() -->
+                <div class="op-symbol-row" id="opSymbol">＋</div>
+                <div class="arith-row">
+                  <div class="arith-label">B</div>
+                  <input type="number" id="arithValueB" class="arith-input" value="5" placeholder="0" oninput="runArithmetic()" />
+                  <select id="arithUnitB" class="arith-unit-select" onchange="runArithmetic()"></select>
+                </div>
+              </div>
+
+              <!-- Arithmetic result: value, unit, and full expression string -->
+              <div class="arith-result-box" id="arithResultBox">
+                <div class="arith-result-label">Result</div>
+                <div>
+                  <span class="arith-result-value" id="arithResultValue">—</span>
+                  <span class="arith-result-unit"  id="arithResultUnit"></span>
+                </div>
+                <div class="arith-result-expr" id="arithResultExpr"></div>
+              </div>
+
+              <!-- Warning shown when temperature add/subtract is attempted -->
+              <div class="arith-note" id="arithNote" style="display:none;"></div>
+            </div>
+
+            <!-- Right: Step-by-step breakdown, built by renderSteps() in home.js -->
+            <div class="card steps-card">
+              <div class="card-title" style="margin-bottom:10px;"><span>📋</span> Steps</div>
+              <div class="steps-list" id="stepsList">
+                <p class="steps-empty">Enter values to see calculation steps.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <!-- end arithmetic panel -->
+
+  </div><!-- end content-area -->
+</div><!-- end app-shell -->
+
+<!-- units.js must load before home.js (provides CATEGORIES, UNIT_SYMBOLS, convert(), formatResult()) -->
+<script src="../js/units.js"></script>
+<script src="../js/home.js"></script>
+</body>
+</html>

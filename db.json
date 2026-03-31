@@ -1,0 +1,25 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Anamika Yadav",
+      "email": "anamikay1144@gmail.com",
+      "password": "Anamika@1234",
+      "mobile": "8534002581"
+    },
+    {
+      "id": 2,
+      "name": "Test User",
+      "email": "test@gmail.com",
+      "password": "test123",
+      "mobile": "9876543210"
+    },
+    {
+      "name": "Navya",
+      "email": "navya@gmail.com",
+      "password": "123456",
+      "mobile": "1234567890",
+      "id": 3
+    }
+  ]
+}

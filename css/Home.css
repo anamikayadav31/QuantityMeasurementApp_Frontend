@@ -1,0 +1,471 @@
+/* =============================================
+   css/home.css  –  Enhanced: Converter + Comparison + Arithmetic
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+/* ─── Variables: brand colours, shadows, radius, and font ── */
+:root {
+  --primary:       #C0392B;
+  --primary-dark:  #a93226;
+  --primary-light: #fdecea;
+  --navy:          #1a1a2e;
+  --navy-mid:      #16213e;
+  --accent-green:  #27ae60;
+  --accent-blue:   #2980b9;
+  --accent-orange: #e67e22;
+  --text-dark:     #1a1a2e;
+  --text-mid:      #555577;
+  --text-light:    #9090aa;
+  --border:        #e8e8f0;
+  --bg:            #f4f5f8;
+  --white:         #ffffff;
+  --radius:        14px;
+  --radius-sm:     9px;
+  --shadow-sm:     0 2px 10px rgba(0,0,0,0.07);
+  --shadow-md:     0 6px 24px rgba(0,0,0,0.10);
+  --font:          'Poppins', sans-serif;
+  --navbar-h:      62px;  /* used to offset the fixed navbar */
+}
+
+/* ─── Layout: fixed full-height shell, no page-level scroll ── */
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font);
+  background: var(--bg);
+}
+
+/* ─── Navbar: fixed to top, dark navy, holds logo + greeting + logout ── */
+.navbar {
+  background: var(--navy);
+  padding: 0 40px;
+  height: var(--navbar-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.22);
+}
+
+.navbar-brand {
+  display: flex; align-items: center; gap: 12px; text-decoration: none;
+}
+.navbar-logo {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(192,57,43,0.2);
+  border: 1.5px solid rgba(192,57,43,0.5);
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+.navbar-logo img { width: 70%; height: 70%; object-fit: contain; }
+.navbar-title { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.3px; }
+
+.navbar-right { display: flex; align-items: center; gap: 16px; }
+.user-greeting { font-size: 13px; color: rgba(255,255,255,0.6); }
+.user-greeting strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+.logout-btn {
+  background: rgba(192,57,43,0.2);
+  border: 1px solid rgba(192,57,43,0.5);
+  color: #ff7b6b;
+  padding: 7px 18px; border-radius: 999px;
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  cursor: pointer; transition: background 0.2s, border-color 0.2s;
+}
+.logout-btn:hover { background: rgba(192,57,43,0.35); border-color: rgba(192,57,43,0.8); }
+
+/* ─── App Shell: fills remaining viewport below the navbar ── */
+.app-shell {
+  position: fixed;
+  top: var(--navbar-h);
+  left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Mode Bar: top tab strip to switch between Converter / Comparison / Arithmetic ── */
+.mode-bar {
+  background: var(--white);
+  border-bottom: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  height: 50px;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Active mode tab gets a red bottom border underline */
+.mode-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 8px 20px;
+  background: none;
+  border: none;
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  border-bottom: 2.5px solid transparent;
+  transition: color 0.18s, border-color 0.18s;
+  height: 100%;
+  letter-spacing: 0.2px;
+}
+.mode-btn:hover { color: var(--primary); }
+.mode-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+.mode-icon { font-size: 15px; }
+
+/* ─── Content Area: flex column that fills remaining space below the mode bar ── */
+.content-area {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ─── Mode Panels: only the .active panel is displayed ── */
+.mode-panel {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+.mode-panel.active { display: flex; }
+
+/* ─── Panel Body: inner scrollable zone for each mode's content ── */
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Thin custom scrollbar */
+.panel-body::-webkit-scrollbar { width: 5px; }
+.panel-body::-webkit-scrollbar-track { background: transparent; }
+.panel-body::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+/* ─── Category Tabs: pill-shaped filter buttons (Length / Weight / Volume / Temperature) ── */
+.cat-row {
+  display: flex; gap: 8px; flex-wrap: wrap; flex-shrink: 0;
+}
+.cat-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 16px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  font-family: var(--font); font-size: 12.5px; font-weight: 600;
+  color: var(--text-mid);
+  cursor: pointer; transition: all 0.18s;
+  box-shadow: var(--shadow-sm);
+}
+.cat-btn:hover { border-color: var(--primary); color: var(--primary); }
+.cat-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(192,57,43,0.3); }
+.cat-icon { font-size: 14px; }
+
+/* ─── Cards: white content containers; .card-accent adds a red top border ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+}
+
+.card-accent {
+  border-top: 3px solid var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.card-title {
+  font-size: 14.5px; font-weight: 700; color: var(--text-dark);
+  display: flex; align-items: center; gap: 7px;
+  margin-bottom: 16px;
+}
+.card-title span { font-size: 16px; }
+
+/* ─── Converter: 3-column grid (from | swap | to) ── */
+.converter-row {
+  display: grid;
+  grid-template-columns: 1fr 44px 1fr;
+  gap: 12px;
+  align-items: end;
+}
+.input-group label {
+  display: block; font-size: 11px; font-weight: 600;
+  color: var(--text-light); text-transform: uppercase;
+  letter-spacing: 0.8px; margin-bottom: 6px;
+}
+.field-pair { display: flex; gap: 8px; }
+
+/* Large bold number input; spinner arrows hidden for cleaner look */
+.num-input {
+  flex: 1; min-width: 0;
+  padding: 11px 13px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 17px; font-weight: 700;
+  color: var(--text-dark); outline: none; background: #fafafa;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -moz-appearance: textfield;
+}
+.num-input::-webkit-outer-spin-button,
+.num-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.num-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(192,57,43,0.08); background: var(--white); }
+
+.unit-select {
+  padding: 11px 10px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 12.5px; font-weight: 600;
+  color: var(--text-dark); background: #fafafa;
+  outline: none; cursor: pointer; min-width: 100px;
+  transition: border-color 0.2s;
+}
+.unit-select:focus { border-color: var(--primary); }
+
+.swap-wrap { display: flex; align-items: flex-end; justify-content: center; padding-bottom: 1px; }
+/* Swap button rotates 180° on hover */
+.swap-btn {
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 1.5px solid var(--border); background: var(--white);
+  font-size: 17px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, transform 0.25s, box-shadow 0.2s;
+  color: var(--text-mid);
+}
+.swap-btn:hover { border-color: var(--primary); color: var(--primary); transform: rotate(180deg); box-shadow: 0 4px 12px rgba(192,57,43,0.15); }
+
+/* ─── Result Box: light-red banner showing converted value and formula ── */
+.result-box {
+  margin-top: 14px; padding: 14px 18px;
+  background: var(--primary-light);
+  border: 1.5px solid rgba(192,57,43,0.2); border-radius: var(--radius-sm);
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
+}
+.result-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary); flex-shrink: 0; }
+.result-value { font-size: 1.9rem; font-weight: 700; color: var(--primary); line-height: 1; letter-spacing: -0.5px; }
+.result-unit  { font-size: 13px; font-weight: 600; color: var(--primary-dark); }
+.result-formula { margin-left: auto; font-size: 11.5px; color: var(--text-light); }
+
+/* ─── Quick Reference: auto-fill grid of clickable preset conversion items ── */
+.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); margin-bottom: 10px; }
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 7px; }
+.ref-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 6px;
+  padding: 9px 12px; background: #f9f9fb;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 12px; cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.ref-item:hover { border-color: var(--primary); background: var(--primary-light); }
+.ref-from { font-weight: 700; color: var(--text-dark); }
+.ref-arrow { color: var(--text-light); font-size: 11px; }
+.ref-to   { font-weight: 600; color: var(--primary); }
+
+/* ─── History: list of recent conversions with a "Clear all" button ── */
+.history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.clear-btn { background: none; border: none; font-family: var(--font); font-size: 12px; color: var(--text-light); cursor: pointer; text-decoration: underline; transition: color 0.15s; }
+.clear-btn:hover { color: var(--primary); }
+.history-list { display: flex; flex-direction: column; gap: 6px; }
+.history-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 9px 13px; background: #f9f9fb;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 12.5px; flex-wrap: wrap; gap: 6px;
+}
+.h-expr { color: var(--text-mid); font-weight: 500; }
+.h-result { color: var(--primary); font-weight: 700; }
+.history-empty { text-align: center; padding: 16px; font-size: 13px; color: var(--text-light); }
+
+/* ══════════════════════════════════════════════
+   COMPARISON PANEL
+   Two side-by-side inputs + animated bar chart + verdict text
+   ══════════════════════════════════════════════ */
+.cmp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 0;
+}
+.cmp-side {
+  background: #fafafa;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+.cmp-side-label {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.9px; color: var(--text-light); margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+/* Coloured circle badge labelling each side (A = blue, B = orange) */
+.cmp-badge {
+  width: 18px; height: 18px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff;
+}
+.badge-a { background: var(--accent-blue); }
+.badge-b { background: var(--accent-orange); }
+
+.cmp-result-box {
+  margin-top: 14px;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+}
+.cmp-result-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.9px; color: var(--text-mid); margin-bottom: 10px;
+}
+.cmp-bars { display: flex; flex-direction: column; gap: 10px; }
+.cmp-bar-row { display: flex; align-items: center; gap: 10px; }
+.cmp-bar-label { width: 24px; text-align: center; }
+.cmp-bar-track {
+  flex: 1; height: 14px; background: #f0f0f5;
+  border-radius: 999px; overflow: hidden;
+}
+/* Bar width animated smoothly when runComparison() updates it */
+.cmp-bar-fill {
+  height: 100%; border-radius: 999px;
+  transition: width 0.5s cubic-bezier(.4,0,.2,1);
+}
+.fill-a { background: var(--accent-blue); }
+.fill-b { background: var(--accent-orange); }
+.cmp-bar-val { font-size: 12px; font-weight: 700; color: var(--text-dark); min-width: 80px; text-align: right; }
+/* Verdict banner changes colour class depending on which value is larger */
+.cmp-verdict {
+  margin-top: 12px; padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600;
+  text-align: center;
+}
+.verdict-a   { background: rgba(41,128,185,0.1);  color: var(--accent-blue);   }
+.verdict-b   { background: rgba(230,126,34,0.1);  color: var(--accent-orange); }
+.verdict-eq  { background: rgba(39,174,96,0.1);   color: var(--accent-green);  }
+.verdict-na  { background: #f9f9f9; color: var(--text-light); }
+
+/* ══════════════════════════════════════════════
+   ARITHMETIC PANEL
+   Operation buttons + two value inputs + result box + steps card
+   ══════════════════════════════════════════════ */
+/* Two-column layout: left = inputs/result, right = steps breakdown */
+.arith-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+/* Operation selector: Add / Subtract / Divide buttons */
+.op-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.op-btn {
+  padding: 7px 16px;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 13px; font-weight: 700;
+  color: var(--text-mid); cursor: pointer;
+  transition: all 0.15s;
+}
+.op-btn:hover { border-color: var(--primary); color: var(--primary); }
+.op-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+.arith-inputs { display: flex; flex-direction: column; gap: 10px; }
+.arith-row { display: flex; align-items: center; gap: 10px; }
+/* Dark navy circle label (A / B) beside each input row */
+.arith-label {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--navy); color: #fff;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+/* Number input for arithmetic values; spinner hidden */
+.arith-input {
+  flex: 1;
+  padding: 10px 13px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 15px; font-weight: 600;
+  color: var(--text-dark); outline: none; background: #fafafa;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -moz-appearance: textfield;
+}
+.arith-input::-webkit-outer-spin-button,
+.arith-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.arith-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(192,57,43,0.08); background: var(--white); }
+.arith-unit-select {
+  padding: 10px 9px;
+  border: 1.5px solid var(--border); border-radius: var(--radius-sm);
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  color: var(--text-dark); background: #fafafa;
+  outline: none; cursor: pointer; min-width: 95px;
+  transition: border-color 0.2s;
+}
+.arith-unit-select:focus { border-color: var(--primary); }
+
+/* Large operator symbol (＋ / － / ÷) between the two input rows */
+.op-symbol-row {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; color: var(--primary);
+  padding: 4px 0;
+}
+
+/* Result banner below the arithmetic inputs */
+.arith-result-box {
+  background: var(--primary-light);
+  border: 1.5px solid rgba(192,57,43,0.2);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px; margin-top: 14px;
+}
+.arith-result-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--primary); margin-bottom: 4px; }
+.arith-result-value { font-size: 2rem; font-weight: 700; color: var(--primary); line-height: 1; }
+.arith-result-unit  { font-size: 13px; font-weight: 600; color: var(--primary-dark); margin-left: 6px; }
+.arith-result-expr  { font-size: 11.5px; color: var(--text-light); margin-top: 4px; }
+
+/* Yellow warning banner shown for temperature add/subtract (non-linear scales) */
+.arith-note {
+  margin-top: 10px; padding: 10px 14px;
+  background: #fffbea; border: 1px solid #f0d060;
+  border-radius: var(--radius-sm);
+  font-size: 12px; color: #8a6a00;
+}
+
+/* Steps card: numbered breakdown of the calculation, built by renderSteps() */
+.steps-card { flex: 1; }
+.steps-list { display: flex; flex-direction: column; gap: 7px; }
+.step-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 9px 12px; background: #f9f9fb;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 12.5px;
+}
+.step-num {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--primary); color: #fff;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.step-text { color: var(--text-mid); line-height: 1.5; }
+.step-text strong { color: var(--text-dark); }
+.steps-empty { color: var(--text-light); font-size: 13px; padding: 12px 0; }
+
+/* ─── Responsive: single-column layout on narrow screens ── */
+@media (max-width: 680px) {
+  .navbar { padding: 0 18px; }
+  .panel-body { padding: 14px 14px; }
+  .converter-row { grid-template-columns: 1fr; }
+  .swap-wrap { justify-content: flex-start; padding: 2px 0; }
+  .result-formula { display: none; }
+  .cmp-grid { grid-template-columns: 1fr; }
+  .arith-layout { grid-template-columns: 1fr; }
+  .mode-bar { padding: 0 14px; }
+  .mode-btn { padding: 8px 12px; font-size: 12px; }
+}

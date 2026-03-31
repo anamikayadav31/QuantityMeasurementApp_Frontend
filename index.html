@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+  index.html — Login / Sign Up page for Quantity Measurement App
+  Layout   : Two-panel card (left: branding, right: forms)
+  Forms    : Login (email + password) | Sign Up (name, email, password, mobile)
+  Auth     : On login success, saves session to sessionStorage and redirects to pages/home.html
+  Depends  : css/auth.css (styles), js/auth.js (form logic + JSON Server API calls)
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantity Measurement App — Login</title>
+  <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+
+  <!-- Main card: flex container holding left branding panel + right form panel -->
+  <div class="card-wrapper">
+
+    <!-- LEFT PANEL: App logo, name, and tagline (decorative/branding only) -->
+    <div class="left-panel">
+      <div class="img-circle">
+        <img
+          src="https://e7.pngegg.com/pngimages/146/275/png-clipart-physical-quantity-physics-magnitude-unit-of-measurement-science-angle-measurement-thumbnail.png"
+          alt="Quantity Measurement" />
+      </div>
+      <p class="brand-name">Quantity Measurement App</p>
+      <p class="brand-tagline">Convert · Measure · Simplify</p>
+    </div>
+
+    <!-- RIGHT PANEL: Tab bar + Login form + Sign Up form -->
+    <div class="right-panel">
+
+      <!-- Tab bar: switches between Login and Sign Up via showTab() in auth.js -->
+      <div class="tabs">
+        <button class="tab-btn" id="loginTab"  onclick="showTab('login')">Login</button>
+        <button class="tab-btn" id="signupTab" onclick="showTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- LOGIN FORM: Email + Password; handled by handleLogin() in auth.js -->
+      <div class="form-section" id="loginForm">
+        <p class="form-title">Welcome back</p>
+        <p class="form-subtitle">Sign in to continue to your account</p>
+
+        <div class="input-group">
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" />
+          <span class="field-error" id="loginEmailErr"></span>
+        </div>
+
+        <div class="input-group">
+          <label for="loginPassword">Password</label>
+          <!-- password-wrapper positions the show/hide eye icon over the input -->
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" placeholder="Enter your password" />
+            <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
+          </div>
+          <span class="field-error" id="loginPasswordErr"></span>
+        </div>
+
+        <button class="submit-btn" id="loginBtn" onclick="handleLogin()">Login</button>
+        <p class="msg" id="loginMsg"></p>
+        <p class="switch-link">Don't have an account? <a onclick="showTab('signup')">Sign up</a></p>
+      </div>
+
+      <!-- SIGN UP FORM: Name, Email, Password, Mobile; handled by handleSignup() in auth.js -->
+      <div class="form-section" id="signupForm">
+        <p class="form-title">Create account</p>
+        <p class="form-subtitle">Join us — it's free and takes 30 seconds</p>
+
+        <div class="input-group">
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="Anamika Yadav" />
+          <span class="field-error" id="signupNameErr"></span>
+        </div>
+
+        <div class="input-group">
+          <label for="signupEmail">Email Address</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com" />
+          <span class="field-error" id="signupEmailErr"></span>
+        </div>
+
+        <div class="input-group">
+          <label for="signupPassword">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="signupPassword" placeholder="Min. 6 characters" />
+            <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
+          </div>
+          <span class="field-error" id="signupPasswordErr"></span>
+        </div>
+
+        <div class="input-group">
+          <label for="signupMobile">Mobile Number</label>
+          <input type="tel" id="signupMobile" placeholder="10-digit number" maxlength="10" />
+          <span class="field-error" id="signupMobileErr"></span>
+        </div>
+
+        <button class="submit-btn" id="signupBtn" onclick="handleSignup()">Sign Up</button>
+        <p class="msg" id="signupMsg"></p>
+        <p class="switch-link">Already have an account? <a onclick="showTab('login')">Login</a></p>
+      </div>
+
+    </div>
+    <!-- end right panel -->
+
+  </div>
+  <!-- end card -->
+
+  <!-- auth.js: handles tab switching, validation, login/signup API calls -->
+  <script src="js/auth.js"></script>
+</body>
+</html>
