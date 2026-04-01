@@ -46,7 +46,7 @@ body {
 .card-wrapper {
   display: flex;
   width: 780px;
-  min-height: 500px;
+  height: 600px;        /* fixed height — both tabs always the same card size */
   border-radius: 20px;
   overflow: hidden;
   box-shadow: var(--shadow);
@@ -144,17 +144,18 @@ body {
 /* ─── Right Panel: white form area ── */
 .right-panel {
   width: 58%;
-  padding: 40px 48px;
+  padding: 28px 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  overflow-y: auto;
 }
 
 /* ─── Tabs: Login / Sign Up switcher with red underline on active tab ── */
 .tabs {
   display: flex;
   gap: 28px;
-  margin-bottom: 32px;
+  margin-bottom: 20px;
   border-bottom: 1.5px solid var(--border);
   padding-bottom: 0;
 }
@@ -174,9 +175,7 @@ body {
   text-transform: uppercase;
 }
 
-.tab-btn.active {
-  color: var(--primary);
-}
+.tab-btn.active { color: var(--primary); }
 
 /* Red underline indicator for the active tab */
 .tab-btn.active::after {
@@ -204,12 +203,12 @@ body {
 .form-subtitle {
   font-size: 12.5px;
   color: var(--text-mid);
-  margin-bottom: 22px;
+  margin-bottom: 12px;
 }
 
 /* ─── Input Groups: label + input + inline error message ── */
 .input-group {
-  margin-bottom: 14px;
+  margin-bottom: 9px;
 }
 
 .input-group label {
@@ -281,8 +280,8 @@ body {
 /* ─── Submit Button: full-width, red, with shadow and press animation ── */
 .submit-btn {
   width: 100%;
-  padding: 13px;
-  margin-top: 8px;
+  padding: 12px;
+  margin-top: 4px;
   background: var(--primary);
   color: white;
   border: none;
@@ -312,7 +311,7 @@ body {
 
 /* ─── Messages: success/error status text shown below the submit button ── */
 .msg {
-  margin-top: 10px;
+  margin-top: 5px;
   font-size: 12.5px;
   text-align: center;
   min-height: 18px;
@@ -326,9 +325,36 @@ body {
 .msg.success { color: var(--success); }
 .msg.error   { color: var(--error); }
 
+/* ─── OR Divider: horizontal rule with centred "or" text between auth methods ── */
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 6px;
+  color: var(--text-light);
+  font-size: 12px;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── Google Button Wrapper: centres the GSI-rendered iframe button ── */
+.google-btn-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+  /* GSI renders an <iframe> inside here; min-height prevents layout shift */
+  min-height: 44px;
+}
+
 /* ─── Switch Link: "Already have an account?" text with a clickable tab link ── */
 .switch-link {
-  margin-top: 14px;
+  margin-top: 8px;
   font-size: 12.5px;
   color: var(--text-mid);
   text-align: center;
@@ -352,6 +378,6 @@ body {
     max-width: 440px;
   }
   .left-panel, .right-panel { width: 100%; }
-  .right-panel { padding: 32px 28px; }
-  .left-panel { padding: 32px 28px; }
+  .right-panel { padding: 28px 24px; }
+  .left-panel  { padding: 32px 28px; }
 }

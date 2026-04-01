@@ -2,9 +2,11 @@
 <!--
   index.html — Login / Sign Up page for Quantity Measurement App
   Layout   : Two-panel card (left: branding, right: forms)
-  Forms    : Login (email + password) | Sign Up (name, email, password, mobile)
-  Auth     : On login success, saves session to sessionStorage and redirects to pages/home.html
-  Depends  : css/auth.css (styles), js/auth.js (form logic + JSON Server API calls)
+  Auth     : Email/password via JSON Server OR Google Sign-In via GSI library
+  Google   : Uses the Google Identity Services (GSI) One Tap + button flow.
+             Replace YOUR_GOOGLE_CLIENT_ID below with your actual OAuth 2.0 Client ID
+             from https://console.cloud.google.com → APIs & Services → Credentials
+  Depends  : css/auth.css, js/auth.js
 -->
 <html lang="en">
 <head>
@@ -12,8 +14,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Quantity Measurement App — Login</title>
   <link rel="stylesheet" href="css/auth.css" />
+
+  <!--
+    Google Identity Services library.
+    Loads the GSI SDK which provides google.accounts.id.initialize()
+    and renders the Google Sign-In button.
+  -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+
+  <!--
+    Google One Tap prompt container.
+    GSI renders the floating One Tap UI inside this div automatically
+    when google.accounts.id.prompt() is called in auth.js.
+  -->
+  <div id="g_id_onload"
+       data-client_id="673667107810-41a2oa9a6gor1nmk1u17q7cdeh3ti8ck.apps.googleusercontent.com"
+       data-callback="handleGoogleCredential"
+       data-auto_prompt="false">
+  </div>
 
   <!-- Main card: flex container holding left branding panel + right form panel -->
   <div class="card-wrapper">
@@ -38,7 +58,7 @@
         <button class="tab-btn" id="signupTab" onclick="showTab('signup')">Sign Up</button>
       </div>
 
-      <!-- LOGIN FORM: Email + Password; handled by handleLogin() in auth.js -->
+      <!-- LOGIN FORM: Email + Password + Google button -->
       <div class="form-section" id="loginForm">
         <p class="form-title">Welcome back</p>
         <p class="form-subtitle">Sign in to continue to your account</p>
@@ -51,7 +71,6 @@
 
         <div class="input-group">
           <label for="loginPassword">Password</label>
-          <!-- password-wrapper positions the show/hide eye icon over the input -->
           <div class="password-wrapper">
             <input type="password" id="loginPassword" placeholder="Enter your password" />
             <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
@@ -61,13 +80,24 @@
 
         <button class="submit-btn" id="loginBtn" onclick="handleLogin()">Login</button>
         <p class="msg" id="loginMsg"></p>
+
+        <!-- Divider between email login and Google login -->
+        <div class="or-divider"><span>or</span></div>
+
+        <!--
+          Google Sign-In button for login.
+          Rendered by GSI via auth.js → renderGoogleButtons().
+          data-type="standard" shows the full branded button.
+        -->
+        <div id="googleBtnLogin" class="google-btn-wrap"></div>
+
         <p class="switch-link">Don't have an account? <a onclick="showTab('signup')">Sign up</a></p>
       </div>
 
-      <!-- SIGN UP FORM: Name, Email, Password, Mobile; handled by handleSignup() in auth.js -->
+      <!-- SIGN UP FORM: Name, Email, Password + Google button -->
       <div class="form-section" id="signupForm">
         <p class="form-title">Create account</p>
-        <p class="form-subtitle">Join us — it's free and takes 30 seconds</p>
+        <!-- <p class="form-subtitle">Join us — it's free and takes 30 seconds</p> -->
 
         <div class="input-group">
           <label for="signupName">Full Name</label>
@@ -91,13 +121,20 @@
         </div>
 
         <div class="input-group">
-          <label for="signupMobile">Mobile Number</label>
-          <input type="tel" id="signupMobile" placeholder="10-digit number" maxlength="10" />
-          <span class="field-error" id="signupMobileErr"></span>
-        </div>
 
         <button class="submit-btn" id="signupBtn" onclick="handleSignup()">Sign Up</button>
         <p class="msg" id="signupMsg"></p>
+
+        <!-- Divider between email signup and Google signup -->
+        <div class="or-divider"><span>or</span></div>
+
+        <!--
+          Google Sign-In button for signup.
+          Same GSI button — Google handles both new and returning users.
+          handleGoogleCredential() in auth.js auto-creates the account if new.
+        -->
+        <div id="googleBtnSignup" class="google-btn-wrap"></div>
+
         <p class="switch-link">Already have an account? <a onclick="showTab('login')">Login</a></p>
       </div>
 
@@ -107,7 +144,7 @@
   </div>
   <!-- end card -->
 
-  <!-- auth.js: handles tab switching, validation, login/signup API calls -->
+  <!-- auth.js: tab switching, validation, email/password API calls, Google auth -->
   <script src="js/auth.js"></script>
 </body>
 </html>
