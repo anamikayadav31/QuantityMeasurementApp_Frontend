@@ -20,6 +20,34 @@
       "password": "123456",
       "mobile": "1234567890",
       "id": 3
+    },
+    {
+      "name": "Anamika Yadav",
+      "email": "ana@gmai.com",
+      "password": "123456",
+      "provider": "email",
+      "id": 4
+    },
+    {
+      "name": "qe32",
+      "email": "qwer@dfgh.com",
+      "password": "12344566",
+      "provider": "email",
+      "id": 5
+    },
+    {
+      "name": "anam",
+      "email": "asd@sdfgh.com",
+      "password": "345678",
+      "provider": "email",
+      "id": 6
+    },
+    {
+      "name": "anamika",
+      "email": "ana@gmail.com",
+      "password": "456789",
+      "provider": "email",
+      "id": 7
     }
   ]
 }

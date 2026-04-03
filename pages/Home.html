@@ -1,86 +1,89 @@
 <!DOCTYPE html>
-<!--
-  pages/home.html — Main app page (protected, requires login)
-  Layout  : Fixed navbar + mode tab bar + scrollable content panels
-  Modes   : Converter | Comparison | Arithmetic (switched via switchMode() in home.js)
-  Depends : css/home.css (styles), js/units.js (unit data), js/home.js (all logic)
-  Guard   : home.js redirects to index.html if sessionStorage.loggedIn is missing
--->
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quantity Measurement App — Home</title>
-  <link rel="stylesheet" href="../css/home.css" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit Converter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/app.css"/>
+  <link rel="stylesheet" href="../css/home.css"/>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
-<!-- NAVBAR: App logo, welcome greeting (set by home.js), and logout button -->
-<nav class="navbar">
-  <a class="navbar-brand" href="#">
-    <div class="navbar-logo">
-      <img src="https://e7.pngegg.com/pngimages/146/275/png-clipart-physical-quantity-physics-magnitude-unit-of-measurement-science-angle-measurement-thumbnail.png" alt="Logo" />
-    </div>
-    <span class="navbar-title">Quantity Measurement</span>
-  </a>
-  <div class="navbar-right">
-    <span class="user-greeting" id="userGreeting"></span> <!-- filled by home.js on load -->
-    <button class="logout-btn" onclick="logout()">Logout</button>
+<div id="g_id_onload"
+     data-client_id="673667107810-41a2oa9a6gor1nmk1u17q7cdeh3ti8ck.apps.googleusercontent.com"
+     data-callback="handleGoogleCredential"
+     data-auto_prompt="false"></div>
+
+<!-- NAVBAR -->
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="../index.html">
+      <div class="site-logo-icon">📐</div>
+      <span class="site-logo-text">Unit<span>Convert</span></span>
+    </a>
+    <!-- Header nav synced to mode bar via switchMode() -->
+    <nav class="header-nav">
+      <button class="header-nav-btn active" id="hnConverter"  onclick="switchMode('converter')">Converter</button>
+      <button class="header-nav-btn"        id="hnComparison" onclick="switchMode('comparison')">Comparison</button>
+      <button class="header-nav-btn"        id="hnArithmetic" onclick="switchMode('arithmetic')">Arithmetic</button>
+    </nav>
+    <div class="header-right" id="navbarRightInner"></div>
   </div>
-</nav>
+</header>
 
-<!-- APP SHELL: Full-height container below the navbar; no page scroll -->
-<div class="app-shell">
+<!-- HISTORY NUDGE -->
+<div class="history-nudge" id="historyNudge">
+  <span class="nudge-text">📜 <strong>Sign in</strong> to save your history across sessions.</span>
+  <button class="nudge-btn" onclick="openHistoryModal()">Sign In</button>
+  <button class="nudge-close" onclick="dismissNudge()">✕</button>
+</div>
 
-  <!-- MODE BAR: Top-level tabs to switch between the three functional panels -->
+<!-- APP SHELL -->
+<div class="app-shell" id="appShell">
+
+  <!-- MODE BAR (tab bar below header) -->
   <div class="mode-bar">
-    <button class="mode-btn active" id="modeConverter"   onclick="switchMode('converter')">
-      <span class="mode-icon">🔄</span> Converter
+    <button class="mode-btn active" id="modeConverter"  onclick="switchMode('converter')">
+      <span class="mode-icon">🔢</span><span class="mode-label">Converter</span>
     </button>
-    <button class="mode-btn"        id="modeComparison"  onclick="switchMode('comparison')">
-      <span class="mode-icon">⚖️</span> Comparison
+    <button class="mode-btn"        id="modeComparison" onclick="switchMode('comparison')">
+      <span class="mode-icon">📊</span><span class="mode-label">Comparison</span>
     </button>
-    <button class="mode-btn"        id="modeArithmetic"  onclick="switchMode('arithmetic')">
-      <span class="mode-icon">➕</span> Arithmetic
+    <button class="mode-btn"        id="modeArithmetic" onclick="switchMode('arithmetic')">
+      <span class="mode-icon">➗</span><span class="mode-label">Arithmetic</span>
     </button>
   </div>
 
-  <!-- CONTENT AREA: Only the active .mode-panel is visible at a time -->
   <div class="content-area">
 
-    <!-- ── CONVERTER PANEL ──────────────────────────────────────────
-         Convert a value from one unit to another within a category.
-         Category tabs, unit selects, and quick-ref built by home.js.
-    ─────────────────────────────────────────────────────────────── -->
+    <!-- ══ CONVERTER PANEL ══ -->
     <div class="mode-panel active" id="panelConverter">
       <div class="panel-body">
-
-        <!-- Category tabs (Length / Weight / Volume / Temperature) — injected by home.js -->
         <div class="cat-row" id="categoryTabs"></div>
 
-        <!-- Converter card: From input + unit select → swap button → To unit select + result -->
-        <div class="card card-accent">
+        <div class="card card-top">
           <div class="card-title" id="converterHeading"><span>📏</span> Length Converter</div>
           <div class="converter-row">
-            <div class="input-group">
-              <label for="fromValue">From</label>
+            <div>
+              <label class="inp-label">From</label>
               <div class="field-pair">
-                <input type="number" id="fromValue" class="num-input" value="1" placeholder="0" />
-                <select id="fromUnit" class="unit-select" onchange="runConversion()"></select>
+                <input  type="number" class="num-input" id="fromValue" value="1" placeholder="0"/>
+                <select class="unit-select" id="fromUnit" onchange="runConversion()"></select>
               </div>
             </div>
-            <!-- Swap button: exchanges from/to units and recalculates -->
             <div class="swap-wrap">
-              <button class="swap-btn" onclick="swapUnits()" title="Swap">⇄</button>
+              <button class="swap-btn" onclick="swapUnits()" title="Swap units">⇄</button>
             </div>
-            <div class="input-group">
-              <label for="toUnit">To</label>
+            <div>
+              <label class="inp-label">To</label>
               <div class="field-pair">
-                <select id="toUnit" class="unit-select" style="flex:1" onchange="runConversion()"></select>
+                <select class="unit-select" id="toUnit" onchange="runConversion()"></select>
               </div>
             </div>
           </div>
-          <!-- Result display: value, unit symbol, and formula string -->
           <div class="result-box">
             <span class="result-label">Result</span>
             <span class="result-value" id="resultValue">—</span>
@@ -89,157 +92,195 @@
           </div>
         </div>
 
-        <!-- Quick Reference: clickable preset conversions, built by buildQuickRef() -->
         <div class="card">
           <div class="section-label">Quick Reference</div>
           <div class="ref-grid" id="quickRefGrid"></div>
         </div>
 
-        <!-- History: last 12 conversions, hidden until first conversion is made -->
-        <div class="card" id="historySection" style="display:none;">
+        <div class="card" id="historySection" style="display:none">
           <div class="history-header">
-            <div class="section-label" style="margin-bottom:0">Recent Conversions</div>
+            <div class="card-title" style="margin-bottom:0">📜 Recent Conversions</div>
             <button class="clear-btn" onclick="clearHistory()">Clear all</button>
           </div>
           <div class="history-list" id="historyList"></div>
-          <p class="history-empty" id="historyEmpty">No conversions yet.</p>
+          <div class="history-signin-nudge" id="historySigninNudge" style="display:none">
+            <p>Sign in to save your history across sessions.</p>
+            <button onclick="openHistoryModal()">Sign In to Save</button>
+          </div>
         </div>
-
       </div>
     </div>
-    <!-- end converter panel -->
 
-    <!-- ── COMPARISON PANEL ─────────────────────────────────────────
-         Compare two values (different units) side by side.
-         Both are converted to a common base unit for fair comparison.
-         Result shown as proportional bars + a text verdict.
-    ─────────────────────────────────────────────────────────────── -->
+    <!-- ══ COMPARISON PANEL ══ -->
     <div class="mode-panel" id="panelComparison">
       <div class="panel-body">
-
-        <!-- Category tabs — injected by home.js -->
         <div class="cat-row" id="cmpCategoryTabs"></div>
-
-        <div class="card card-accent">
-          <div class="card-title"><span>⚖️</span> Side-by-Side Comparison</div>
-
-          <!-- Two input sides (A and B) with independent unit selects -->
+        <div class="card card-top">
+          <div class="card-title">📊 Compare Two Values</div>
           <div class="cmp-grid">
             <div class="cmp-side">
               <div class="cmp-side-label"><span class="cmp-badge badge-a">A</span> Value A</div>
               <div class="field-pair">
-                <input type="number" id="cmpValueA" class="num-input" value="1" placeholder="0" oninput="runComparison()" style="font-size:15px;" />
-                <select id="cmpUnitA" class="unit-select" onchange="runComparison()"></select>
+                <input  type="number" class="num-input" id="cmpValueA" value="1" oninput="runComparison()"/>
+                <select class="unit-select" id="cmpUnitA" onchange="runComparison()"></select>
               </div>
             </div>
             <div class="cmp-side">
               <div class="cmp-side-label"><span class="cmp-badge badge-b">B</span> Value B</div>
               <div class="field-pair">
-                <input type="number" id="cmpValueB" class="num-input" value="5" placeholder="0" oninput="runComparison()" style="font-size:15px;" />
-                <select id="cmpUnitB" class="unit-select" onchange="runComparison()"></select>
+                <input  type="number" class="num-input" id="cmpValueB" value="5" oninput="runComparison()"/>
+                <select class="unit-select" id="cmpUnitB" onchange="runComparison()"></select>
               </div>
             </div>
           </div>
-
-          <!-- Comparison result: animated bar chart + verdict text, updated by runComparison() -->
-          <div class="cmp-result-box" id="cmpResultBox">
-            <div class="cmp-result-title">Comparison Result (converted to base unit)</div>
+          <div class="cmp-result">
+            <div class="cmp-result-label">Result</div>
             <div class="cmp-bars">
               <div class="cmp-bar-row">
-                <div class="cmp-bar-label"><span class="cmp-badge badge-a" style="width:20px;height:20px;font-size:10px;">A</span></div>
-                <div class="cmp-bar-track"><div class="cmp-bar-fill fill-a" id="barA" style="width:50%"></div></div>
-                <div class="cmp-bar-val" id="barLabelA">—</div>
+                <span class="cmp-bar-lbl"><span class="cmp-badge badge-a" style="width:20px;height:20px;font-size:9px">A</span></span>
+                <div class="cmp-track"><div class="cmp-fill fill-a" id="barA" style="width:50%"></div></div>
+                <span class="cmp-bar-val" id="barLabelA">—</span>
               </div>
               <div class="cmp-bar-row">
-                <div class="cmp-bar-label"><span class="cmp-badge badge-b" style="width:20px;height:20px;font-size:10px;">B</span></div>
-                <div class="cmp-bar-track"><div class="cmp-bar-fill fill-b" id="barB" style="width:50%"></div></div>
-                <div class="cmp-bar-val" id="barLabelB">—</div>
+                <span class="cmp-bar-lbl"><span class="cmp-badge badge-b" style="width:20px;height:20px;font-size:9px">B</span></span>
+                <div class="cmp-track"><div class="cmp-fill fill-b" id="barB" style="width:50%"></div></div>
+                <span class="cmp-bar-val" id="barLabelB">—</span>
               </div>
             </div>
-            <div class="cmp-verdict verdict-na" id="cmpVerdict">Enter values to compare</div>
+            <div class="cmp-verdict verdict-na" id="cmpVerdict">Enter values to compare.</div>
           </div>
         </div>
-
       </div>
     </div>
-    <!-- end comparison panel -->
 
-    <!-- ── ARITHMETIC PANEL ─────────────────────────────────────────
-         Perform Add / Subtract / Divide on two values with any units.
-         B is auto-converted to A's unit before the operation.
-         Divide produces a dimensionless ratio.
-         Right side shows step-by-step breakdown of the calculation.
-    ─────────────────────────────────────────────────────────────── -->
+    <!-- ══ ARITHMETIC PANEL ══ -->
     <div class="mode-panel" id="panelArithmetic">
       <div class="panel-body">
-
-        <!-- Category tabs — injected by home.js -->
         <div class="cat-row" id="arithCategoryTabs"></div>
-
-        <div class="card card-accent">
-          <div class="card-title"><span>🧮</span> Unit Arithmetic</div>
-
-          <!-- Operation selector: Add / Subtract / Divide, handled by setOp() -->
-          <div class="op-tabs">
-            <button class="op-btn active" id="opAdd"      onclick="setOp('add')">＋ Add</button>
-            <button class="op-btn"        id="opSubtract" onclick="setOp('subtract')">－ Subtract</button>
-            <button class="op-btn"        id="opDivide"   onclick="setOp('divide')">÷ Divide</button>
+        <div class="arith-layout">
+          <div class="card card-top">
+            <div class="card-title">➗ Arithmetic</div>
+            <div class="op-tabs">
+              <button class="op-btn active" id="opAdd"      onclick="setOp('add')">＋ Add</button>
+              <button class="op-btn"        id="opSubtract" onclick="setOp('subtract')">－ Subtract</button>
+              <button class="op-btn"        id="opDivide"   onclick="setOp('divide')">÷ Divide</button>
+            </div>
+            <div class="arith-inputs">
+              <div class="arith-row">
+                <div class="arith-lbl">A</div>
+                <input  type="number" class="arith-input" id="arithValueA" value="10" oninput="runArithmetic()"/>
+                <select class="arith-sel" id="arithUnitA" onchange="runArithmetic()"></select>
+              </div>
+              <div class="op-sym-row" id="opSymbol">＋</div>
+              <div class="arith-row">
+                <div class="arith-lbl">B</div>
+                <input  type="number" class="arith-input" id="arithValueB" value="5" oninput="runArithmetic()"/>
+                <select class="arith-sel" id="arithUnitB" onchange="runArithmetic()"></select>
+              </div>
+            </div>
+            <div class="arith-result">
+              <div class="arith-result-label">Result</div>
+              <div>
+                <span class="arith-result-value" id="arithResultValue">—</span>
+                <span class="arith-result-unit"  id="arithResultUnit"></span>
+              </div>
+              <div class="arith-result-expr" id="arithResultExpr"></div>
+            </div>
+            <div class="arith-note" id="arithNote" style="display:none"></div>
           </div>
-
-          <!-- Two-column layout: left = inputs + result, right = calculation steps -->
-          <div class="arith-layout">
-
-            <!-- Left: Value A, operator symbol, Value B, result box, warning note -->
-            <div>
-              <div class="arith-inputs">
-                <div class="arith-row">
-                  <div class="arith-label">A</div>
-                  <input type="number" id="arithValueA" class="arith-input" value="10" placeholder="0" oninput="runArithmetic()" />
-                  <select id="arithUnitA" class="arith-unit-select" onchange="runArithmetic()"></select>
-                </div>
-                <!-- Dynamic operator symbol (＋ / － / ÷) updated by setOp() -->
-                <div class="op-symbol-row" id="opSymbol">＋</div>
-                <div class="arith-row">
-                  <div class="arith-label">B</div>
-                  <input type="number" id="arithValueB" class="arith-input" value="5" placeholder="0" oninput="runArithmetic()" />
-                  <select id="arithUnitB" class="arith-unit-select" onchange="runArithmetic()"></select>
-                </div>
-              </div>
-
-              <!-- Arithmetic result: value, unit, and full expression string -->
-              <div class="arith-result-box" id="arithResultBox">
-                <div class="arith-result-label">Result</div>
-                <div>
-                  <span class="arith-result-value" id="arithResultValue">—</span>
-                  <span class="arith-result-unit"  id="arithResultUnit"></span>
-                </div>
-                <div class="arith-result-expr" id="arithResultExpr"></div>
-              </div>
-
-              <!-- Warning shown when temperature add/subtract is attempted -->
-              <div class="arith-note" id="arithNote" style="display:none;"></div>
+          <div class="card steps-card">
+            <div class="card-title">📋 Steps</div>
+            <div class="steps-list" id="stepsList">
+              <p class="steps-empty">Enter values to see steps.</p>
             </div>
-
-            <!-- Right: Step-by-step breakdown, built by renderSteps() in home.js -->
-            <div class="card steps-card">
-              <div class="card-title" style="margin-bottom:10px;"><span>📋</span> Steps</div>
-              <div class="steps-list" id="stepsList">
-                <p class="steps-empty">Enter values to see calculation steps.</p>
-              </div>
-            </div>
-
           </div>
         </div>
-
       </div>
     </div>
-    <!-- end arithmetic panel -->
 
-  </div><!-- end content-area -->
-</div><!-- end app-shell -->
+  </div><!-- /content-area -->
+</div><!-- /app-shell -->
 
-<!-- units.js must load before home.js (provides CATEGORIES, UNIT_SYMBOLS, convert(), formatResult()) -->
+<!-- SIGN-IN MODAL -->
+<div class="modal-overlay" id="historyModal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Sign in to Save History</span>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-info">
+      <span class="modal-info-icon">📜</span>
+      <div>
+        <strong>Save your history</strong>
+        <p>All converter features work without signing in.</p>
+      </div>
+    </div>
+    <div class="modal-tabs">
+      <button class="m-tab active" id="hTabLogin"  onclick="switchHTab('login')">Sign In</button>
+      <button class="m-tab"        id="hTabSignup" onclick="switchHTab('signup')">Create Account</button>
+    </div>
+    <div class="modal-bd">
+
+      <!-- LOGIN -->
+      <div class="m-form active" id="hFormLogin">
+        <div class="m-group">
+          <label for="hlEmail">Email</label>
+          <input type="email" id="hlEmail" placeholder="you@example.com" autocomplete="email"
+                 onkeydown="if(event.key==='Enter')doHomeLogin()"/>
+          <div class="m-err" id="hlEmailErr"></div>
+        </div>
+        <div class="m-group">
+          <label for="hlPw">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="hlPw" placeholder="Your password" autocomplete="current-password"
+                   onkeydown="if(event.key==='Enter')doHomeLogin()"/>
+            <span class="pw-eye" onclick="togglePw('hlPw',this)">👁</span>
+          </div>
+          <div class="m-err" id="hlPwErr"></div>
+        </div>
+        <button class="m-submit" id="hLoginBtn" onclick="doHomeLogin()">Sign In</button>
+        <div class="m-msg" id="hLoginMsg"></div>
+        <div class="m-divider"><span>or continue with</span></div>
+        <div id="googleBtnHome" class="google-btn-wrap"></div>
+        <div class="m-switch">No account? <a onclick="switchHTab('signup')">Create one free</a></div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="m-form" id="hFormSignup">
+        <div class="m-group">
+          <label for="hsName">Full Name</label>
+          <input type="text" id="hsName" placeholder="Anamika Yadav" autocomplete="name"
+                 onkeydown="if(event.key==='Enter')doHomeSignup()"/>
+          <div class="m-err" id="hsNameErr"></div>
+        </div>
+        <div class="m-group">
+          <label for="hsEmail">Email</label>
+          <input type="email" id="hsEmail" placeholder="you@example.com" autocomplete="email"
+                 onkeydown="if(event.key==='Enter')doHomeSignup()"/>
+          <div class="m-err" id="hsEmailErr"></div>
+        </div>
+        <div class="m-group">
+          <label for="hsPw">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="hsPw" placeholder="Min. 6 characters" autocomplete="new-password"
+                   onkeydown="if(event.key==='Enter')doHomeSignup()"/>
+            <span class="pw-eye" onclick="togglePw('hsPw',this)">👁</span>
+          </div>
+          <div class="m-err" id="hsPwErr"></div>
+        </div>
+        <button class="m-submit" id="hSignupBtn" onclick="doHomeSignup()">Create Account</button>
+        <div class="m-msg" id="hSignupMsg"></div>
+        <div class="m-divider"><span>or sign up with</span></div>
+        <div id="googleBtnHome2" class="google-btn-wrap"></div>
+        <div class="m-switch">Have an account? <a onclick="switchHTab('login')">Sign in</a></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script src="../js/units.js"></script>
+<script src="../js/auth.js"></script>
 <script src="../js/home.js"></script>
 </body>
 </html>

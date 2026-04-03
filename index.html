@@ -1,150 +1,223 @@
 <!DOCTYPE html>
-<!--
-  index.html — Login / Sign Up page for Quantity Measurement App
-  Layout   : Two-panel card (left: branding, right: forms)
-  Auth     : Email/password via JSON Server OR Google Sign-In via GSI library
-  Google   : Uses the Google Identity Services (GSI) One Tap + button flow.
-             Replace YOUR_GOOGLE_CLIENT_ID below with your actual OAuth 2.0 Client ID
-             from https://console.cloud.google.com → APIs & Services → Credentials
-  Depends  : css/auth.css, js/auth.js
--->
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quantity Measurement App — Login</title>
-  <link rel="stylesheet" href="css/auth.css" />
-
-  <!--
-    Google Identity Services library.
-    Loads the GSI SDK which provides google.accounts.id.initialize()
-    and renders the Google Sign-In button.
-  -->
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unit Converter — Free & No Login Required</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/app.css"/>
+  <link rel="stylesheet" href="css/landing.css"/>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
 
-  <!--
-    Google One Tap prompt container.
-    GSI renders the floating One Tap UI inside this div automatically
-    when google.accounts.id.prompt() is called in auth.js.
-  -->
-  <div id="g_id_onload"
-       data-client_id="673667107810-41a2oa9a6gor1nmk1u17q7cdeh3ti8ck.apps.googleusercontent.com"
-       data-callback="handleGoogleCredential"
-       data-auto_prompt="false">
+<div id="g_id_onload"
+     data-client_id="673667107810-41a2oa9a6gor1nmk1u17q7cdeh3ti8ck.apps.googleusercontent.com"
+     data-callback="handleGoogleCredential"
+     data-auto_prompt="false"></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="site-header-inner">
+    <a class="site-logo" href="index.html">
+      <div class="site-logo-icon">📐</div>
+      <span class="site-logo-text">Unit<span>Convert</span></span>
+    </a>
+    <nav class="header-nav">
+      <a class="header-nav-link" href="pages/home.html">Converter</a>
+      <a class="header-nav-link" href="pages/home.html">Comparison</a>
+      <a class="header-nav-link" href="pages/home.html">Arithmetic</a>
+      <a class="header-nav-link" href="#categories">Categories</a>
+    </nav>
+    <div class="header-right" id="headerRight"></div>
   </div>
+</header>
 
-  <!-- Main card: flex container holding left branding panel + right form panel -->
-  <div class="card-wrapper">
-
-    <!-- LEFT PANEL: App logo, name, and tagline (decorative/branding only) -->
-    <div class="left-panel">
-      <div class="img-circle">
-        <img
-          src="https://e7.pngegg.com/pngimages/146/275/png-clipart-physical-quantity-physics-magnitude-unit-of-measurement-science-angle-measurement-thumbnail.png"
-          alt="Quantity Measurement" />
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-text">
+      
+      <h1>Convert Units<br>Instantly & Free</h1>
+      <p>Open and use right away — no account needed.<br>Sign in <strong>only</strong> to save your history.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="pages/home.html">Open Converter →</a>
+        <button class="btn-outline" onclick="openModal('login')">Sign In</button>
       </div>
-      <p class="brand-name">Quantity Measurement App</p>
-      <p class="brand-tagline">Convert · Measure · Simplify</p>
+      <div class="hero-chips">
+        <span>✓ Converter</span>
+        <span>✓ Comparison</span>
+        <span>✓ Arithmetic</span>
+        
+      </div>
     </div>
+    <div class="hero-card">
+      <div class="preview-label">Live Preview</div>
+      <div class="preview-row"><span class="pr-from">1 mile</span><span class="pr-arrow">→</span><span class="pr-to">1.609 km</span></div>
+      <div class="preview-row"><span class="pr-from">100 °F</span><span class="pr-arrow">→</span><span class="pr-to">37.78 °C</span></div>
+      <div class="preview-row"><span class="pr-from">1 gallon</span><span class="pr-arrow">→</span><span class="pr-to">3.785 L</span></div>
+      <div class="preview-row"><span class="pr-from">1 lb</span><span class="pr-arrow">→</span><span class="pr-to">453.6 g</span></div>
+      <div class="preview-row"><span class="pr-from">1 foot</span><span class="pr-arrow">→</span><span class="pr-to">30.48 cm</span></div>
+      
+    </div>
+  </div>
+</section>
 
-    <!-- RIGHT PANEL: Tab bar + Login form + Sign Up form -->
-    <div class="right-panel">
+<!-- STRIP -->
+<div class="strip">
+  <div class="strip-item">⚡ Instant Results</div>
+  <div class="strip-item">📐 40+ Units</div>
+  <div class="strip-item">🔓 No Login Needed</div>
+      
+  <div class="strip-item hi">📜 History on Sign In</div>
+</div>
 
-      <!-- Tab bar: switches between Login and Sign Up via showTab() in auth.js -->
-      <div class="tabs">
-        <button class="tab-btn" id="loginTab"  onclick="showTab('login')">Login</button>
-        <button class="tab-btn" id="signupTab" onclick="showTab('signup')">Sign Up</button>
+<!-- CATEGORIES -->
+<section class="section" id="categories">
+  <div class="sec-head">
+    <h2>Categories</h2>
+    <a class="sec-link" href="pages/home.html">Open Converter →</a>
+  </div>
+  <div class="cat-grid">
+    <a class="cat-card" href="pages/home.html">
+      <div class="cat-badge">8 units</div>
+      <span class="cat-emoji">📏</span>
+      <div class="cat-name">Length</div>
+      <div class="cat-desc">mm · cm · m · km · inch · foot · yard · mile</div>
+    </a>
+    <a class="cat-card" href="pages/home.html">
+      <div class="cat-badge">7 units</div>
+      <span class="cat-emoji">⚖️</span>
+      <div class="cat-name">Weight</div>
+      <div class="cat-desc">mg · g · kg · metric ton · oz · lb · stone</div>
+    </a>
+    <a class="cat-card" href="pages/home.html">
+      <div class="cat-badge">10 units</div>
+      <span class="cat-emoji">🧪</span>
+      <div class="cat-name">Volume</div>
+      <div class="cat-desc">mL · L · cup · pint · quart · gallon &amp; more</div>
+    </a>
+    <a class="cat-card" href="pages/home.html">
+      <div class="cat-badge">3 units</div>
+      <span class="cat-emoji">🌡️</span>
+      <div class="cat-name">Temperature</div>
+      <div class="cat-desc">Celsius · Fahrenheit · Kelvin</div>
+    </a>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section how-section">
+  <h2 style="margin-bottom:18px">How it works</h2>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">1</div>
+      <div class="how-title">Just Open & Use</div>
+      <div class="how-text">No sign-up. Click "Open Converter" and start immediately.</div>
+    </div>
+    <div class="how-card">
+      <div class="how-num">2</div>
+      <div class="how-title">All Features Free</div>
+      <div class="how-text">Converter, Comparison, and Arithmetic — all open, no account needed.</div>
+    </div>
+    <div class="how-card how-highlight">
+      <div class="how-num">3</div>
+      <div class="how-title">Sign In for History</div>
+      <div class="how-text">The only thing behind sign-in is saving your history across sessions.</div>
+      <button class="btn-primary" style="margin-top:12px;padding:8px 18px;font-size:13px" onclick="openModal('login')">Sign In →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-logo">📐 <strong>UnitConvert</strong></div>
+    <p>Free for everyone · No sign-up required · © 2025</p>
+  </div>
+</footer>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title">Unit<span>Convert</span></span>
+      <button class="modal-x" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-info">
+      <span class="modal-info-icon">📜</span>
+      <div>
+        <strong>Sign in to save history</strong>
+        <p>Everything else works without an account.</p>
       </div>
+      <a class="modal-skip" href="pages/home.html">Use without signing in →</a>
+    </div>
+    <div class="modal-tabs">
+      <button class="m-tab" id="tabLogin"  onclick="switchTab('login')">Sign In</button>
+      <button class="m-tab" id="tabSignup" onclick="switchTab('signup')">Create Account</button>
+    </div>
+    <div class="modal-bd">
 
-      <!-- LOGIN FORM: Email + Password + Google button -->
-      <div class="form-section" id="loginForm">
-        <p class="form-title">Welcome back</p>
-        <p class="form-subtitle">Sign in to continue to your account</p>
-
-        <div class="input-group">
-          <label for="loginEmail">Email Address</label>
-          <input type="email" id="loginEmail" placeholder="you@example.com" />
-          <span class="field-error" id="loginEmailErr"></span>
+      <!-- LOGIN -->
+      <div class="m-form" id="formLogin">
+        <div class="m-group">
+          <label for="lEmail">Email</label>
+          <input type="email" id="lEmail" placeholder="you@example.com" autocomplete="email"
+                 onkeydown="if(event.key==='Enter')doLogin()"/>
+          <div class="m-err" id="lEmailErr"></div>
         </div>
-
-        <div class="input-group">
-          <label for="loginPassword">Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="loginPassword" placeholder="Enter your password" />
-            <span class="eye-icon" onclick="togglePassword('loginPassword', this)">👁</span>
+        <div class="m-group">
+          <label for="lPw">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="lPw" placeholder="Your password" autocomplete="current-password"
+                   onkeydown="if(event.key==='Enter')doLogin()"/>
+            <span class="pw-eye" onclick="togglePw('lPw',this)">👁</span>
           </div>
-          <span class="field-error" id="loginPasswordErr"></span>
+          <div class="m-err" id="lPwErr"></div>
         </div>
-
-        <button class="submit-btn" id="loginBtn" onclick="handleLogin()">Login</button>
-        <p class="msg" id="loginMsg"></p>
-
-        <!-- Divider between email login and Google login -->
-        <div class="or-divider"><span>or</span></div>
-
-        <!--
-          Google Sign-In button for login.
-          Rendered by GSI via auth.js → renderGoogleButtons().
-          data-type="standard" shows the full branded button.
-        -->
+        <button class="m-submit" id="loginBtn" onclick="doLogin()">Sign In</button>
+        <div class="m-msg" id="loginMsg"></div>
+        <div class="m-divider"><span>or continue with</span></div>
         <div id="googleBtnLogin" class="google-btn-wrap"></div>
-
-        <p class="switch-link">Don't have an account? <a onclick="showTab('signup')">Sign up</a></p>
+        <div class="m-switch">No account? <a onclick="switchTab('signup')">Create one free</a></div>
       </div>
 
-      <!-- SIGN UP FORM: Name, Email, Password + Google button -->
-      <div class="form-section" id="signupForm">
-        <p class="form-title">Create account</p>
-        <!-- <p class="form-subtitle">Join us — it's free and takes 30 seconds</p> -->
-
-        <div class="input-group">
-          <label for="signupName">Full Name</label>
-          <input type="text" id="signupName" placeholder="Anamika Yadav" />
-          <span class="field-error" id="signupNameErr"></span>
+      <!-- SIGNUP -->
+      <div class="m-form" id="formSignup">
+        <div class="m-group">
+          <label for="sName">Full Name</label>
+          <input type="text" id="sName" placeholder="Anamika Yadav" autocomplete="name"
+                 onkeydown="if(event.key==='Enter')doSignup()"/>
+          <div class="m-err" id="sNameErr"></div>
         </div>
-
-        <div class="input-group">
-          <label for="signupEmail">Email Address</label>
-          <input type="email" id="signupEmail" placeholder="you@example.com" />
-          <span class="field-error" id="signupEmailErr"></span>
+        <div class="m-group">
+          <label for="sEmail">Email</label>
+          <input type="email" id="sEmail" placeholder="you@example.com" autocomplete="email"
+                 onkeydown="if(event.key==='Enter')doSignup()"/>
+          <div class="m-err" id="sEmailErr"></div>
         </div>
-
-        <div class="input-group">
-          <label for="signupPassword">Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="signupPassword" placeholder="Min. 6 characters" />
-            <span class="eye-icon" onclick="togglePassword('signupPassword', this)">👁</span>
+        <div class="m-group">
+          <label for="sPw">Password</label>
+          <div class="pw-wrap">
+            <input type="password" id="sPw" placeholder="Min. 6 characters" autocomplete="new-password"
+                   onkeydown="if(event.key==='Enter')doSignup()"/>
+            <span class="pw-eye" onclick="togglePw('sPw',this)">👁</span>
           </div>
-          <span class="field-error" id="signupPasswordErr"></span>
+          <div class="m-err" id="sPwErr"></div>
         </div>
-
-        <div class="input-group">
-
-        <button class="submit-btn" id="signupBtn" onclick="handleSignup()">Sign Up</button>
-        <p class="msg" id="signupMsg"></p>
-
-        <!-- Divider between email signup and Google signup -->
-        <div class="or-divider"><span>or</span></div>
-
-        <!--
-          Google Sign-In button for signup.
-          Same GSI button — Google handles both new and returning users.
-          handleGoogleCredential() in auth.js auto-creates the account if new.
-        -->
+        <button class="m-submit" id="signupBtn" onclick="doSignup()">Create Account</button>
+        <div class="m-msg" id="signupMsg"></div>
+        <div class="m-divider"><span>or sign up with</span></div>
         <div id="googleBtnSignup" class="google-btn-wrap"></div>
-
-        <p class="switch-link">Already have an account? <a onclick="showTab('login')">Login</a></p>
+        <div class="m-switch">Have an account? <a onclick="switchTab('login')">Sign in</a></div>
       </div>
 
     </div>
-    <!-- end right panel -->
-
   </div>
-  <!-- end card -->
+</div>
 
-  <!-- auth.js: tab switching, validation, email/password API calls, Google auth -->
-  <script src="js/auth.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/landing.js"></script>
 </body>
 </html>
