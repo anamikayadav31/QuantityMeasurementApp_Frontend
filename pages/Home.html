@@ -3,12 +3,155 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Unit Converter</title>
+  <title>Quantity Measurement App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/app.css"/>
   <link rel="stylesheet" href="../css/home.css"/>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+  <style>
+    /* ════════════════════════════════════════
+       FIXED-SIZE MODALS — all three modals
+       get an identical, stable box size
+       ════════════════════════════════════════ */
+
+    /* ── Auth modal (Sign In / Create Account) ── */
+    #historyModal .modal {
+      width: 460px;
+      max-width: 96vw;
+    }
+    #historyModal .modal-bd {
+      padding: 20px 24px;
+      height: 460px;          /* fixed — NEVER changes between tabs */
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+    #historyModal .m-form {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+    }
+    #historyModal .m-form.active { display: flex; }
+    #historyModal .m-form .m-switch {
+      margin-top: auto;
+      padding-top: 8px;
+    }
+
+    /* ── All History modal ── */
+    #allHistoryModal .modal {
+      width: 600px;
+      max-width: 96vw;
+    }
+    #allHistoryModal .modal-bd {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Filter bar — fixed, never scrolls */
+    #allHistoryModal .hist-filter-bar {
+      padding: 14px 20px 10px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+    /* Filter buttons — ALL same size, no change on active */
+    #allHistoryModal .hist-filter-bar button {
+      padding: 0;
+      width: 80px;
+      height: 32px;
+      line-height: 32px;
+      text-align: center;
+      border-radius: 20px;
+      font-family: var(--font);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    #allHistoryModal .hist-filter-bar button.active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+    /* Scrollable list area — fixed height so modal never grows */
+    #allHistoryContent {
+      height: 380px;
+      overflow-y: auto;
+      padding: 14px 20px;
+      box-sizing: border-box;
+    }
+    #allHistoryContent::-webkit-scrollbar { width: 4px; }
+    #allHistoryContent::-webkit-scrollbar-thumb {
+      background: var(--border); border-radius: 4px;
+    }
+    /* History row */
+    .hist-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      margin-bottom: 8px;
+      background: var(--white);
+      gap: 10px;
+    }
+    .hist-row:last-child { margin-bottom: 0; }
+    .hist-op-badge {
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: var(--blue-light);
+      color: var(--blue);
+      white-space: nowrap;
+      flex-shrink: 0;
+      align-self: flex-start;
+    }
+    .hist-op-badge.err { background: #fee2e2; color: #dc2626; }
+    .hist-expr {
+      flex: 1;
+      min-width: 0;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      line-height: 1.5;
+    }
+    .hist-err-msg {
+      font-size: 11px;
+      color: #dc2626;
+      margin-top: 2px;
+      display: block;
+    }
+    .hist-time {
+      font-size: 11px;
+      color: var(--text-light);
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+    .hist-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+  </style>
 </head>
 <body>
 
@@ -22,38 +165,33 @@
   <div class="site-header-inner">
     <a class="site-logo" href="../index.html">
       <div class="site-logo-icon">📐</div>
-      <span class="site-logo-text">Unit<span>Convert</span></span>
+      <span class="site-logo-text">Quantity<span>Measure</span></span>
     </a>
-    <!-- Header nav synced to mode bar via switchMode() -->
     <nav class="header-nav">
       <button class="header-nav-btn active" id="hnConverter"  onclick="switchMode('converter')">Converter</button>
       <button class="header-nav-btn"        id="hnComparison" onclick="switchMode('comparison')">Comparison</button>
       <button class="header-nav-btn"        id="hnArithmetic" onclick="switchMode('arithmetic')">Arithmetic</button>
     </nav>
-    <div class="header-right" id="navbarRightInner"></div>
+    <div class="header-right" style="gap:8px;">
+      <button class="home-nav-btn" onclick="showAllHistoryModal()">All History</button>
+      <div id="navbarRightInner"></div>
+    </div>
   </div>
 </header>
-
-<!-- HISTORY NUDGE -->
-<div class="history-nudge" id="historyNudge">
-  <span class="nudge-text">📜 <strong>Sign in</strong> to save your history across sessions.</span>
-  <button class="nudge-btn" onclick="openHistoryModal()">Sign In</button>
-  <button class="nudge-close" onclick="dismissNudge()">✕</button>
-</div>
 
 <!-- APP SHELL -->
 <div class="app-shell" id="appShell">
 
-  <!-- MODE BAR (tab bar below header) -->
+  <!-- MODE BAR -->
   <div class="mode-bar">
     <button class="mode-btn active" id="modeConverter"  onclick="switchMode('converter')">
-      <span class="mode-icon">🔢</span><span class="mode-label">Converter</span>
+      <span class="mode-icon">🔢</span><span>Converter</span>
     </button>
     <button class="mode-btn"        id="modeComparison" onclick="switchMode('comparison')">
-      <span class="mode-icon">📊</span><span class="mode-label">Comparison</span>
+      <span class="mode-icon">📊</span><span>Comparison</span>
     </button>
     <button class="mode-btn"        id="modeArithmetic" onclick="switchMode('arithmetic')">
-      <span class="mode-icon">➗</span><span class="mode-label">Arithmetic</span>
+      <span class="mode-icon">➗</span><span>Arithmetic</span>
     </button>
   </div>
 
@@ -63,49 +201,36 @@
     <div class="mode-panel active" id="panelConverter">
       <div class="panel-body">
         <div class="cat-row" id="categoryTabs"></div>
-
         <div class="card card-top">
           <div class="card-title" id="converterHeading"><span>📏</span> Length Converter</div>
           <div class="converter-row">
             <div>
               <label class="inp-label">From</label>
               <div class="field-pair">
-                <input  type="number" class="num-input" id="fromValue" value="1" placeholder="0"/>
-                <select class="unit-select" id="fromUnit" onchange="runConversion()"></select>
+                <input type="number" class="num-input" id="fromValue" placeholder="Enter value"
+                       onkeydown="if(event.key==='Enter') runConversion()"/>
+                <select class="unit-select" id="fromUnit"></select>
               </div>
             </div>
             <div class="swap-wrap">
-              <button class="swap-btn" onclick="swapUnits()" title="Swap units">⇄</button>
+              <button class="swap-btn" onclick="swapUnits()" title="Swap">⇄</button>
             </div>
             <div>
               <label class="inp-label">To</label>
               <div class="field-pair">
-                <select class="unit-select" id="toUnit" onchange="runConversion()"></select>
+                <select class="unit-select" id="toUnit"></select>
               </div>
             </div>
           </div>
-          <div class="result-box">
+          <div class="btn-row">
+            <button class="action-btn" onclick="runConversion()">Convert</button>
+          </div>
+          <div class="conv-error" id="convError"></div>
+          <div class="result-box" id="resultBox">
             <span class="result-label">Result</span>
             <span class="result-value" id="resultValue">—</span>
             <span class="result-unit"  id="resultUnit"></span>
             <span class="result-formula" id="resultFormula"></span>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="section-label">Quick Reference</div>
-          <div class="ref-grid" id="quickRefGrid"></div>
-        </div>
-
-        <div class="card" id="historySection" style="display:none">
-          <div class="history-header">
-            <div class="card-title" style="margin-bottom:0">📜 Recent Conversions</div>
-            <button class="clear-btn" onclick="clearHistory()">Clear all</button>
-          </div>
-          <div class="history-list" id="historyList"></div>
-          <div class="history-signin-nudge" id="historySigninNudge" style="display:none">
-            <p>Sign in to save your history across sessions.</p>
-            <button onclick="openHistoryModal()">Sign In to Save</button>
           </div>
         </div>
       </div>
@@ -116,39 +241,29 @@
       <div class="panel-body">
         <div class="cat-row" id="cmpCategoryTabs"></div>
         <div class="card card-top">
-          <div class="card-title">📊 Compare Two Values</div>
+          <div class="card-title">Compare Two Values</div>
           <div class="cmp-grid">
             <div class="cmp-side">
               <div class="cmp-side-label"><span class="cmp-badge badge-a">A</span> Value A</div>
               <div class="field-pair">
-                <input  type="number" class="num-input" id="cmpValueA" value="1" oninput="runComparison()"/>
-                <select class="unit-select" id="cmpUnitA" onchange="runComparison()"></select>
+                <input type="number" class="num-input" id="cmpValueA" placeholder="Enter value"
+                       onkeydown="if(event.key==='Enter') runComparison()"/>
+                <select class="unit-select" id="cmpUnitA"></select>
               </div>
             </div>
             <div class="cmp-side">
               <div class="cmp-side-label"><span class="cmp-badge badge-b">B</span> Value B</div>
               <div class="field-pair">
-                <input  type="number" class="num-input" id="cmpValueB" value="5" oninput="runComparison()"/>
-                <select class="unit-select" id="cmpUnitB" onchange="runComparison()"></select>
+                <input type="number" class="num-input" id="cmpValueB" placeholder="Enter value"
+                       onkeydown="if(event.key==='Enter') runComparison()"/>
+                <select class="unit-select" id="cmpUnitB"></select>
               </div>
             </div>
           </div>
-          <div class="cmp-result">
-            <div class="cmp-result-label">Result</div>
-            <div class="cmp-bars">
-              <div class="cmp-bar-row">
-                <span class="cmp-bar-lbl"><span class="cmp-badge badge-a" style="width:20px;height:20px;font-size:9px">A</span></span>
-                <div class="cmp-track"><div class="cmp-fill fill-a" id="barA" style="width:50%"></div></div>
-                <span class="cmp-bar-val" id="barLabelA">—</span>
-              </div>
-              <div class="cmp-bar-row">
-                <span class="cmp-bar-lbl"><span class="cmp-badge badge-b" style="width:20px;height:20px;font-size:9px">B</span></span>
-                <div class="cmp-track"><div class="cmp-fill fill-b" id="barB" style="width:50%"></div></div>
-                <span class="cmp-bar-val" id="barLabelB">—</span>
-              </div>
-            </div>
-            <div class="cmp-verdict verdict-na" id="cmpVerdict">Enter values to compare.</div>
+          <div class="btn-row">
+            <button class="action-btn" onclick="runComparison()">Compare</button>
           </div>
+          <div class="cmp-verdict verdict-na" id="cmpVerdict">Enter values and click Compare.</div>
         </div>
       </div>
     </div>
@@ -157,42 +272,45 @@
     <div class="mode-panel" id="panelArithmetic">
       <div class="panel-body">
         <div class="cat-row" id="arithCategoryTabs"></div>
-        <div class="arith-layout">
-          <div class="card card-top">
-            <div class="card-title">➗ Arithmetic</div>
-            <div class="op-tabs">
-              <button class="op-btn active" id="opAdd"      onclick="setOp('add')">＋ Add</button>
-              <button class="op-btn"        id="opSubtract" onclick="setOp('subtract')">－ Subtract</button>
-              <button class="op-btn"        id="opDivide"   onclick="setOp('divide')">÷ Divide</button>
-            </div>
-            <div class="arith-inputs">
-              <div class="arith-row">
-                <div class="arith-lbl">A</div>
-                <input  type="number" class="arith-input" id="arithValueA" value="10" oninput="runArithmetic()"/>
-                <select class="arith-sel" id="arithUnitA" onchange="runArithmetic()"></select>
-              </div>
-              <div class="op-sym-row" id="opSymbol">＋</div>
-              <div class="arith-row">
-                <div class="arith-lbl">B</div>
-                <input  type="number" class="arith-input" id="arithValueB" value="5" oninput="runArithmetic()"/>
-                <select class="arith-sel" id="arithUnitB" onchange="runArithmetic()"></select>
-              </div>
-            </div>
-            <div class="arith-result">
-              <div class="arith-result-label">Result</div>
-              <div>
-                <span class="arith-result-value" id="arithResultValue">—</span>
-                <span class="arith-result-unit"  id="arithResultUnit"></span>
-              </div>
-              <div class="arith-result-expr" id="arithResultExpr"></div>
-            </div>
-            <div class="arith-note" id="arithNote" style="display:none"></div>
+        <div class="card card-top arith-full-card">
+          <div class="card-title">Arithmetic</div>
+          <div class="op-tabs">
+            <button class="op-btn active" id="opAdd"      onclick="setOp('add')">＋ Add</button>
+            <button class="op-btn"        id="opSubtract" onclick="setOp('subtract')">－ Subtract</button>
+            <button class="op-btn"        id="opDivide"   onclick="setOp('divide')">÷ Divide</button>
           </div>
-          <div class="card steps-card">
-            <div class="card-title">📋 Steps</div>
-            <div class="steps-list" id="stepsList">
-              <p class="steps-empty">Enter values to see steps.</p>
+          <div class="arith-inputs-row">
+            <div>
+              <div class="arith-side-label"><span class="arith-badge">A</span> Value A</div>
+              <div class="arith-field-pair">
+                <input type="number" class="arith-num-input" id="arithValueA" placeholder="Enter value"
+                       onkeydown="if(event.key==='Enter') runArithmetic()"/>
+                <select class="arith-unit-sel" id="arithUnitA"></select>
+              </div>
             </div>
+            <div class="arith-op-col">
+              <div class="op-sym-big" id="opSymbol">＋</div>
+            </div>
+            <div>
+              <div class="arith-side-label"><span class="arith-badge">B</span> Value B</div>
+              <div class="arith-field-pair">
+                <input type="number" class="arith-num-input" id="arithValueB" placeholder="Enter value"
+                       onkeydown="if(event.key==='Enter') runArithmetic()"/>
+                <select class="arith-unit-sel" id="arithUnitB"></select>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="action-btn" onclick="runArithmetic()">Calculate</button>
+          </div>
+          <div class="arith-note" id="arithNote" style="display:none;"></div>
+          <div class="arith-result-full">
+            <div class="arf-label">Result</div>
+            <div>
+              <span class="arf-value" id="arithResultValue">—</span>
+              <span class="arf-unit"  id="arithResultUnit"></span>
+            </div>
+            <div class="arf-expr" id="arithResultExpr"></div>
           </div>
         </div>
       </div>
@@ -201,80 +319,95 @@
   </div><!-- /content-area -->
 </div><!-- /app-shell -->
 
-<!-- SIGN-IN MODAL -->
+<!-- ══ SIGN-IN MODAL (fixed equal size for both tabs) ══ -->
 <div class="modal-overlay" id="historyModal" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-hd">
-      <span class="modal-hd-title">Sign in to Save History</span>
+      <span class="modal-hd-title">Quantity<span>Measure</span></span>
       <button class="modal-x" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-info">
-      <span class="modal-info-icon">📜</span>
-      <div>
-        <strong>Save your history</strong>
-        <p>All converter features work without signing in.</p>
-      </div>
-    </div>
     <div class="modal-tabs">
-      <button class="m-tab active" id="hTabLogin"  onclick="switchHTab('login')">Sign In</button>
-      <button class="m-tab"        id="hTabSignup" onclick="switchHTab('signup')">Create Account</button>
+      <button class="m-tab active" id="hTabLogin"  onclick="switchTab('login')">Sign In</button>
+      <button class="m-tab"        id="hTabSignup" onclick="switchTab('signup')">Create Account</button>
     </div>
     <div class="modal-bd">
 
-      <!-- LOGIN -->
+      <!-- LOGIN FORM -->
       <div class="m-form active" id="hFormLogin">
+        <div class="google-btn-wrap" id="googleBtnHLogin"></div>
+        <div class="or-divider">or</div>
         <div class="m-group">
-          <label for="hlEmail">Email</label>
-          <input type="email" id="hlEmail" placeholder="you@example.com" autocomplete="email"
-                 onkeydown="if(event.key==='Enter')doHomeLogin()"/>
+          <label for="hlEmail">Username / Email</label>
+          <input type="text" id="hlEmail" placeholder="your username or email"
+                 autocomplete="username"
+                 onkeydown="if(event.key==='Enter') doHomeLogin()"/>
           <div class="m-err" id="hlEmailErr"></div>
         </div>
         <div class="m-group">
           <label for="hlPw">Password</label>
           <div class="pw-wrap">
-            <input type="password" id="hlPw" placeholder="Your password" autocomplete="current-password"
-                   onkeydown="if(event.key==='Enter')doHomeLogin()"/>
+            <input type="password" id="hlPw" placeholder="Your password"
+                   autocomplete="current-password"
+                   onkeydown="if(event.key==='Enter') doHomeLogin()"/>
             <span class="pw-eye" onclick="togglePw('hlPw',this)">👁</span>
           </div>
           <div class="m-err" id="hlPwErr"></div>
         </div>
         <button class="m-submit" id="hLoginBtn" onclick="doHomeLogin()">Sign In</button>
         <div class="m-msg" id="hLoginMsg"></div>
-        <div class="m-divider"><span>or continue with</span></div>
-        <div id="googleBtnHome" class="google-btn-wrap"></div>
-        <div class="m-switch">No account? <a onclick="switchHTab('signup')">Create one free</a></div>
+        <div class="m-switch">No account? <a onclick="switchTab('signup')">Create one free</a></div>
       </div>
 
-      <!-- SIGNUP -->
+      <!-- SIGNUP FORM -->
       <div class="m-form" id="hFormSignup">
+        <div class="google-btn-wrap" id="googleBtnHSignup"></div>
+        <div class="or-divider">or</div>
         <div class="m-group">
           <label for="hsName">Full Name</label>
-          <input type="text" id="hsName" placeholder="Anamika Yadav" autocomplete="name"
-                 onkeydown="if(event.key==='Enter')doHomeSignup()"/>
+          <input type="text" id="hsName" placeholder="Your name"
+                 onkeydown="if(event.key==='Enter') doHomeSignup()"/>
           <div class="m-err" id="hsNameErr"></div>
         </div>
         <div class="m-group">
           <label for="hsEmail">Email</label>
-          <input type="email" id="hsEmail" placeholder="you@example.com" autocomplete="email"
-                 onkeydown="if(event.key==='Enter')doHomeSignup()"/>
+          <input type="email" id="hsEmail" placeholder="you@example.com"
+                 onkeydown="if(event.key==='Enter') doHomeSignup()"/>
           <div class="m-err" id="hsEmailErr"></div>
         </div>
         <div class="m-group">
           <label for="hsPw">Password</label>
           <div class="pw-wrap">
-            <input type="password" id="hsPw" placeholder="Min. 6 characters" autocomplete="new-password"
-                   onkeydown="if(event.key==='Enter')doHomeSignup()"/>
+            <input type="password" id="hsPw" placeholder="Min. 6 characters"
+                   onkeydown="if(event.key==='Enter') doHomeSignup()"/>
             <span class="pw-eye" onclick="togglePw('hsPw',this)">👁</span>
           </div>
           <div class="m-err" id="hsPwErr"></div>
         </div>
         <button class="m-submit" id="hSignupBtn" onclick="doHomeSignup()">Create Account</button>
         <div class="m-msg" id="hSignupMsg"></div>
-        <div class="m-divider"><span>or sign up with</span></div>
-        <div id="googleBtnHome2" class="google-btn-wrap"></div>
-        <div class="m-switch">Have an account? <a onclick="switchHTab('login')">Sign in</a></div>
+        <div class="m-switch">Have an account? <a onclick="switchTab('login')">Sign in</a></div>
       </div>
 
+    </div>
+  </div>
+</div>
+
+<!-- ══ ALL HISTORY MODAL ══ -->
+<div class="modal-overlay" id="allHistoryModal" onclick="closeAllHistoryModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-hd-title"> All Operations <span style="font-weight:400;font-size:13px;color:rgba(255,255,255,0.7)">from Database</span></span>
+      <button class="modal-x" onclick="closeAllHistoryModal()">✕</button>
+    </div>
+    <div class="modal-bd">
+      <!-- Filter bar: fixed, outside scroll area -->
+      <div class="hist-filter-bar" id="histFilterBar">
+        <!-- filled by JS -->
+      </div>
+      <!-- Scrollable list -->
+      <div id="allHistoryContent">
+        <div class="hist-empty">Loading...</div>
+      </div>
     </div>
   </div>
 </div>

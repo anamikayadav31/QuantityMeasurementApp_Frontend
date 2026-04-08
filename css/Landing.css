@@ -1,12 +1,12 @@
 /* =============================================
    css/landing.css — Landing page only extras
-   Shared base styles are in css/app.css
    ============================================= */
 
 /* HERO */
 .hero {
   background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 55%, #1a3a6e 100%);
   padding: 60px 36px 52px;
+  margin-top: 58px;
 }
 .hero-inner {
   max-width: 1100px; margin: 0 auto;
@@ -24,40 +24,8 @@
   font-size: 44px; font-weight: 800; color: #fff;
   line-height: 1.1; letter-spacing: -1.2px; margin-bottom: 16px;
 }
-.hero-text p { font-size: 15.5px; color: rgba(255,255,255,0.65); line-height: 1.75; margin-bottom: 28px; }
-.hero-text p strong { color: #93c5fd; font-weight: 700; }
-
-.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
-.hero-actions .btn-outline { border-color: rgba(255,255,255,0.4); color: #fff; }
-.hero-actions .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.08); color: #fff; }
-
 .hero-chips { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .hero-chips span { font-size: 12.5px; color: rgba(255,255,255,0.5); }
-.hero-chips .chip-note { color: #93c5fd; font-weight: 600; }
-
-/* Hero preview card */
-.hero-card {
-  flex-shrink: 0; width: 300px;
-  background: rgba(255,255,255,0.07); backdrop-filter: blur(10px);
-  border: 1px solid rgba(255,255,255,0.12); border-radius: var(--r-lg);
-  padding: 20px;
-}
-.preview-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 14px; }
-.preview-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.06);
-  font-size: 13px;
-}
-.preview-row:last-of-type { border-bottom: none; }
-.pr-from  { color: rgba(255,255,255,0.5); }
-.pr-arrow { color: #93c5fd; }
-.pr-to    { color: #93c5fd; font-weight: 700; }
-.preview-open {
-  text-align: center; margin-top: 12px;
-  font-size: 12px; font-weight: 600; color: #4ade80;
-  background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.2);
-  border-radius: 999px; padding: 5px 14px;
-}
 
 /* STRIP */
 .strip {
@@ -95,20 +63,6 @@
 .cat-name  { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
 .cat-desc  { font-size: 11.5px; color: var(--text-light); line-height: 1.5; }
 
-/* HOW IT WORKS */
-.how-section { background: var(--bg); padding-top: 40px; padding-bottom: 40px; max-width: 100%; }
-.how-section h2 { text-align: center; font-size: 22px; font-weight: 800; max-width: 1100px; margin: 0 auto 18px; padding: 0 36px; }
-.how-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; max-width: 1100px; margin: 0 auto; padding: 0 36px; }
-.how-card {
-  background: var(--white); border: 1.5px solid var(--border);
-  border-radius: var(--r); padding: 22px;
-}
-.how-highlight { border-color: var(--blue); background: var(--blue-light); }
-.how-num { width: 28px; height: 28px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
-.how-highlight .how-num { background: var(--blue-dark); }
-.how-title { font-size: 15px; font-weight: 700; margin-bottom: 7px; color: var(--text); }
-.how-text  { font-size: 13px; color: var(--text-mid); line-height: 1.65; }
-
 /* FOOTER */
 .footer { background: var(--navy); padding: 24px 36px; }
 .footer-inner { max-width: 1100px; margin: 0 auto; text-align: center; }
@@ -121,24 +75,16 @@
   .hero { padding: 44px 20px; }
   .hero-inner { flex-direction: column; gap: 32px; }
   .hero-text h1 { font-size: 34px; }
-  .hero-card { width: 100%; max-width: 360px; }
   .cat-grid { grid-template-columns: repeat(2,1fr); }
-  .how-grid { grid-template-columns: 1fr 1fr; }
   .section { padding: 32px 20px; }
   .strip-item { padding: 12px 18px; font-size: 12.5px; }
 }
 @media (max-width: 600px) {
   .hero-text h1 { font-size: 28px; letter-spacing: -0.5px; }
-  .hero-text p  { font-size: 14px; }
-  .hero-actions { flex-direction: column; }
-  .hero-actions .btn-primary, .hero-actions .btn-outline { width: 100%; }
   .cat-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .how-grid { grid-template-columns: 1fr; }
   .strip { justify-content: flex-start; }
   .strip-item { padding: 11px 16px; flex: 0 0 50%; border-bottom: 1px solid var(--border-light); }
   .section { padding: 28px 16px; }
-  .how-section { padding: 28px 0; }
-  .how-grid { padding: 0 16px; }
   .footer { padding: 18px 16px; }
 }
 @media (max-width: 380px) {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Unit Converter — Free & No Login Required</title>
+  <title>Quantity Measurement App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/app.css"/>
@@ -22,7 +22,7 @@
   <div class="site-header-inner">
     <a class="site-logo" href="index.html">
       <div class="site-logo-icon">📐</div>
-      <span class="site-logo-text">Unit<span>Convert</span></span>
+      <span class="site-logo-text">Quantity<span>Measure</span></span>
     </a>
     <nav class="header-nav">
       <a class="header-nav-link" href="pages/home.html">Converter</a>
@@ -36,30 +36,15 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-inner">
-    <div class="hero-text">
-      
-      <h1>Convert Units<br>Instantly & Free</h1>
-      <p>Open and use right away — no account needed.<br>Sign in <strong>only</strong> to save your history.</p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="pages/home.html">Open Converter →</a>
-        <button class="btn-outline" onclick="openModal('login')">Sign In</button>
-      </div>
-      <div class="hero-chips">
+  <div class="hero-inner" style="justify-content:center; text-align:center;">
+    <div class="hero-text" style="max-width:620px;">
+      <div class="hero-badge">📐 Quantity Measurement App</div>
+      <h1>Measure, Convert<br>&amp; Calculate Units</h1>
+      <div class="hero-chips" style="justify-content:center; margin-top:16px;">
         <span>✓ Converter</span>
         <span>✓ Comparison</span>
         <span>✓ Arithmetic</span>
-        
       </div>
-    </div>
-    <div class="hero-card">
-      <div class="preview-label">Live Preview</div>
-      <div class="preview-row"><span class="pr-from">1 mile</span><span class="pr-arrow">→</span><span class="pr-to">1.609 km</span></div>
-      <div class="preview-row"><span class="pr-from">100 °F</span><span class="pr-arrow">→</span><span class="pr-to">37.78 °C</span></div>
-      <div class="preview-row"><span class="pr-from">1 gallon</span><span class="pr-arrow">→</span><span class="pr-to">3.785 L</span></div>
-      <div class="preview-row"><span class="pr-from">1 lb</span><span class="pr-arrow">→</span><span class="pr-to">453.6 g</span></div>
-      <div class="preview-row"><span class="pr-from">1 foot</span><span class="pr-arrow">→</span><span class="pr-to">30.48 cm</span></div>
-      
     </div>
   </div>
 </section>
@@ -69,7 +54,6 @@
   <div class="strip-item">⚡ Instant Results</div>
   <div class="strip-item">📐 40+ Units</div>
   <div class="strip-item">🔓 No Login Needed</div>
-      
   <div class="strip-item hi">📜 History on Sign In</div>
 </div>
 
@@ -77,13 +61,13 @@
 <section class="section" id="categories">
   <div class="sec-head">
     <h2>Categories</h2>
-    <a class="sec-link" href="pages/home.html">Open Converter →</a>
+    <a class="sec-link" href="pages/home.html">Open App →</a>
   </div>
   <div class="cat-grid">
-    <a class="cat-card" href="pages/home.html">
+    <a class="cat-card" href="pages/home.html" style="padding:32px 18px;">
       <div class="cat-badge">8 units</div>
-      <span class="cat-emoji">📏</span>
-      <div class="cat-name">Length</div>
+      <span class="cat-emoji" style="font-size:40px;">📏</span>
+      <div class="cat-name" style="font-size:17px;">Length</div>
       <div class="cat-desc">mm · cm · m · km · inch · foot · yard · mile</div>
     </a>
     <a class="cat-card" href="pages/home.html">
@@ -92,10 +76,10 @@
       <div class="cat-name">Weight</div>
       <div class="cat-desc">mg · g · kg · metric ton · oz · lb · stone</div>
     </a>
-    <a class="cat-card" href="pages/home.html">
+    <a class="cat-card" href="pages/home.html" style="padding:32px 18px;">
       <div class="cat-badge">10 units</div>
-      <span class="cat-emoji">🧪</span>
-      <div class="cat-name">Volume</div>
+      <span class="cat-emoji" style="font-size:40px;">🧪</span>
+      <div class="cat-name" style="font-size:17px;">Volume</div>
       <div class="cat-desc">mL · L · cup · pint · quart · gallon &amp; more</div>
     </a>
     <a class="cat-card" href="pages/home.html">
@@ -107,34 +91,11 @@
   </div>
 </section>
 
-<!-- HOW IT WORKS -->
-<section class="section how-section">
-  <h2 style="margin-bottom:18px">How it works</h2>
-  <div class="how-grid">
-    <div class="how-card">
-      <div class="how-num">1</div>
-      <div class="how-title">Just Open & Use</div>
-      <div class="how-text">No sign-up. Click "Open Converter" and start immediately.</div>
-    </div>
-    <div class="how-card">
-      <div class="how-num">2</div>
-      <div class="how-title">All Features Free</div>
-      <div class="how-text">Converter, Comparison, and Arithmetic — all open, no account needed.</div>
-    </div>
-    <div class="how-card how-highlight">
-      <div class="how-num">3</div>
-      <div class="how-title">Sign In for History</div>
-      <div class="how-text">The only thing behind sign-in is saving your history across sessions.</div>
-      <button class="btn-primary" style="margin-top:12px;padding:8px 18px;font-size:13px" onclick="openModal('login')">Sign In →</button>
-    </div>
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
-    <div class="footer-logo">📐 <strong>UnitConvert</strong></div>
-    <p>Free for everyone · No sign-up required · © 2025</p>
+    <div class="footer-logo">📐 <strong>Quantity Measurement App</strong></div>
+    <p>No sign-up required · © 2025</p>
   </div>
 </footer>
 
@@ -142,16 +103,8 @@
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
   <div class="modal">
     <div class="modal-hd">
-      <span class="modal-hd-title">Unit<span>Convert</span></span>
+      <span class="modal-hd-title">Quantity<span>Measure</span></span>
       <button class="modal-x" onclick="closeModal()">✕</button>
-    </div>
-    <div class="modal-info">
-      <span class="modal-info-icon">📜</span>
-      <div>
-        <strong>Sign in to save history</strong>
-        <p>Everything else works without an account.</p>
-      </div>
-      <a class="modal-skip" href="pages/home.html">Use without signing in →</a>
     </div>
     <div class="modal-tabs">
       <button class="m-tab" id="tabLogin"  onclick="switchTab('login')">Sign In</button>
@@ -161,55 +114,62 @@
 
       <!-- LOGIN -->
       <div class="m-form" id="formLogin">
+        <!-- Google Sign In -->
+        <div class="google-btn-wrap" id="googleBtnLogin"></div>
+        <div class="or-divider">or</div>
+
         <div class="m-group">
-          <label for="lEmail">Email</label>
-          <input type="email" id="lEmail" placeholder="you@example.com" autocomplete="email"
-                 onkeydown="if(event.key==='Enter')doLogin()"/>
+          <label for="lEmail">Username / Email</label>
+          <input type="text" id="lEmail" placeholder="your username or email"
+                 autocomplete="username"
+                 onkeydown="if(event.key==='Enter') doLogin()"/>
           <div class="m-err" id="lEmailErr"></div>
         </div>
         <div class="m-group">
           <label for="lPw">Password</label>
           <div class="pw-wrap">
-            <input type="password" id="lPw" placeholder="Your password" autocomplete="current-password"
-                   onkeydown="if(event.key==='Enter')doLogin()"/>
+            <input type="password" id="lPw" placeholder="Your password"
+                   autocomplete="current-password"
+                   onkeydown="if(event.key==='Enter') doLogin()"/>
             <span class="pw-eye" onclick="togglePw('lPw',this)">👁</span>
           </div>
           <div class="m-err" id="lPwErr"></div>
         </div>
         <button class="m-submit" id="loginBtn" onclick="doLogin()">Sign In</button>
         <div class="m-msg" id="loginMsg"></div>
-        <div class="m-divider"><span>or continue with</span></div>
-        <div id="googleBtnLogin" class="google-btn-wrap"></div>
         <div class="m-switch">No account? <a onclick="switchTab('signup')">Create one free</a></div>
       </div>
 
       <!-- SIGNUP -->
       <div class="m-form" id="formSignup">
+        <!-- Google Sign Up -->
+        <div class="google-btn-wrap" id="googleBtnSignup"></div>
+        <div class="or-divider">or</div>
+
         <div class="m-group">
           <label for="sName">Full Name</label>
-          <input type="text" id="sName" placeholder="Anamika Yadav" autocomplete="name"
-                 onkeydown="if(event.key==='Enter')doSignup()"/>
+          <input type="text" id="sName" placeholder="Your name"
+                 onkeydown="if(event.key==='Enter') doSignup()"/>
           <div class="m-err" id="sNameErr"></div>
         </div>
         <div class="m-group">
           <label for="sEmail">Email</label>
-          <input type="email" id="sEmail" placeholder="you@example.com" autocomplete="email"
-                 onkeydown="if(event.key==='Enter')doSignup()"/>
+          <input type="email" id="sEmail" placeholder="you@example.com"
+                 onkeydown="if(event.key==='Enter') doSignup()"/>
           <div class="m-err" id="sEmailErr"></div>
         </div>
         <div class="m-group">
           <label for="sPw">Password</label>
           <div class="pw-wrap">
-            <input type="password" id="sPw" placeholder="Min. 6 characters" autocomplete="new-password"
-                   onkeydown="if(event.key==='Enter')doSignup()"/>
+            <input type="password" id="sPw" placeholder="Min. 6 characters"
+                   autocomplete="new-password"
+                   onkeydown="if(event.key==='Enter') doSignup()"/>
             <span class="pw-eye" onclick="togglePw('sPw',this)">👁</span>
           </div>
           <div class="m-err" id="sPwErr"></div>
         </div>
         <button class="m-submit" id="signupBtn" onclick="doSignup()">Create Account</button>
         <div class="m-msg" id="signupMsg"></div>
-        <div class="m-divider"><span>or sign up with</span></div>
-        <div id="googleBtnSignup" class="google-btn-wrap"></div>
         <div class="m-switch">Have an account? <a onclick="switchTab('login')">Sign in</a></div>
       </div>
 
@@ -218,6 +178,10 @@
 </div>
 
 <script src="js/auth.js"></script>
-<script src="js/landing.js"></script>
+<script>
+  function onAuthSuccess() { window.location.href = "pages/home.html"; }
+  updateAllHeaders();
+  switchTab("login");
+</script>
 </body>
 </html>
