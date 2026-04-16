@@ -1,9 +1,8 @@
 // =============================================
 // utils/api.js — API helpers
 // =============================================
-
-export const AUTH_API = "http://localhost:5271/api/v1/users";
-export const QTY_API  = "http://localhost:5271/api/v1/quantities";
+export const AUTH_API = "https://quantity-measurement-api-xhbu.onrender.com/api/v1/users";
+export const QTY_API  = "https://quantity-measurement-api-xhbu.onrender.com/api/v1/quantities";
 
 export async function apiSignup(username, email, password) {
   const res  = await fetch(`${AUTH_API}/signup`, {
